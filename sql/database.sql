@@ -17,3 +17,11 @@ FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 2 ROWS;
+
+
+DROP TABLE IF EXISTS utenti;
+
+CREATE TABLE utenti (
+    Nome varchar(255),
+    Password varchar(255)
+);

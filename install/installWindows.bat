@@ -1,3 +1,4 @@
 pip install ttkthemes
+pip install mysql-connector-python
 
-echo python app.py > ..\launch.bat
+echo python .\src\app.py > ..\launch.bat

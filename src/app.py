@@ -5,21 +5,24 @@ from style import *
 from globalVars import *
 from ttkthemes import ThemedTk
 
+# callback function to close the program
 def closeProgram(event):
-    global window
     global running
 
     running = False
-    window.destroy()
-    print(window)
+    getWindow().destroy()
 
+# function to create windows
 def createWindow():
-    global window
+    # get the reference to the window
+    window = getWindow()
     
+    # if the user isn't logged in
+    # create a login window
     if not getLogin():
         window = ThemedTk()                     # create the window
         window.geometry("500x300")             # "500x200+offsetx+offsety"
-        window.title("Progetto")                 # set the window name
+        window.title("Login")                 # set the window name
         window.resizable(FALSE, FALSE)            # resizable width and height
         window.minsize(500, 300)                # min resize dimensions
         window.attributes('-alpha', 1)          # opacity
@@ -27,11 +30,15 @@ def createWindow():
         window.iconphoto(False, PhotoImage(file = './data/icon.png')) # load the icon
         window.bind('<Escape>', closeProgram)   # bind the escape button to close the program
         
-        loadStyle(window)
-        loadWidgets(loadLoginFrames(window), window) # load the frames and the widgets
+        setWindow(window)
+
+        loadStyle()
+        loadWidgets(loadLoginFrames()) # load the frames and the widgets
         
         window.mainloop()                       # run the app
 
+    # if the user is logged in
+    # load the app window
     if getLogin():
         window = ThemedTk()
         window.geometry("1280x720")
@@ -39,21 +46,22 @@ def createWindow():
         window.resizable(FALSE, FALSE)
         window.bind('<Escape>', closeProgram)
 
-        loadStyle(window)
-        loadWidgets(loadAppFrames(window), window)
+        setWindow(window)
+
+        loadStyle()
+        loadWidgets(loadAppFrames())
 
         window.mainloop()
 
-def main():
-    global window
-    global loggedIn
-    global running
 
+# MAIN FUNCTION
+def main():
+    global running
+    # create a window for as long as the program is running
     while running:
-        print(loggedIn)
         createWindow()
 
     
-
+# start of the program
 if __name__ == "__main__":
     main()

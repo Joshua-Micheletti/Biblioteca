@@ -1,6 +1,9 @@
 from tkinter.ttk import *
+from globalVars import *
 
-def loadStyle(window):
+def loadStyle():
+    window = getWindow()
+
     style = Style(window)
     
     window.tk.call("source", "./themes/azure/azure.tcl")
@@ -14,5 +17,7 @@ def loadStyle(window):
     style.configure("TLabel",
         font = ("Arial", 30)
     )
+
+    setWindow(window)
 
     #style.configure(".", font = ("Arial", 30))
