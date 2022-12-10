@@ -3,11 +3,17 @@ import mysql.connector
 # window object
 window = None
 # flag to keep track of the login
-loggedIn = False
+loggedIn = False # MOCK DATA
 # flag to keep track of the program execution
 running = True
 # string for the logged in user
-user = ""
+user = "" # MOCK DATA
+
+booksOwned = 20 # MOCK DATA
+
+strings = dict()
+
+ints = dict()
 
 # MySQL database connection
 mydb = mysql.connector.connect(
@@ -77,3 +83,26 @@ def setUser(newUser):
 def getUser():
     global user
     return(user)
+
+
+def setBooksOwned(newBooks):
+    global booksOwned
+    booksOwned = newBooks
+
+def getBooksOwned():
+    global booksOwned
+    return(booksOwned)
+
+
+def getStrings():
+    global strings
+    return(strings)
+
+def setStrings(newStrings):
+    global strings
+    strings = newStrings
+
+
+def getInts():
+    global ints
+    return(ints)

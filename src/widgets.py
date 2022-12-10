@@ -7,17 +7,17 @@ from globalVars import *
 from hashlib import sha256
 from login import *
 
-strings = dict()
+widgets = dict()
 
 # function to handle clicks
 def clickHandler(*args):
     # login behaviour
     if args[0] == "login":
-        if login(strings["usernameEntry"].get(), strings["passwordEntry"].get()):
+        if login(getStrings()["usernameEntry"].get(), getStrings()["passwordEntry"].get()):
             # set the login flag to true
             setLogin(True)
             # set the logged in user
-            setUser(strings["usernameEntry"].get())
+            setUser(getStrings()["usernameEntry"].get())
             # destroy the window (replace with function)
             getWindow().destroy()
 
@@ -29,11 +29,11 @@ def clickHandler(*args):
     
     # register behaviour
     if args[0] == "register":
-        if register(strings["usernameEntry"].get(), strings["passwordEntry"].get()):
+        if register(getStrings()["usernameEntry"].get(), getStrings()["passwordEntry"].get()):
             # let the user know of the registration
             messagebox.showinfo("Register Successful",
                                 "The user " +
-                                strings["usernameEntry"].get() +
+                                getStrings()["usernameEntry"].get() +
                                 " is now registered")
         
         else:
@@ -41,6 +41,24 @@ def clickHandler(*args):
             print("USERNAME ALREAD EXISTS")
             messagebox.showerror("Register Error",
                                  "Error: username already exists!")
+
+def switchView():
+    value = getInts()["showRadio"].get()
+    print(value)
+
+def selectedBook(event):
+    selectedBooks = []
+
+    for selected_item in widgets["books"].selection():
+        item = widgets["books"].item(selected_item)
+
+        selectedBooks.append(item['values'])
+
+        #record = item['values']
+        # show a message
+        #messagebox.showinfo(title='Information', message=','.join(record))
+
+    print(selectedBooks)
 
 
 # function to load widgets into the respective frames
@@ -53,17 +71,41 @@ def loadWidgets(frames):
     if "appF" in frames:
         loadApp(frames["appF"])
 
+    if "appFNW" in frames:
+        loadAppNW(frames["appFNW"])
+    
+    if "appFNC" in frames:
+        loadAppNC(frames["appFNC"])
+    '''
+    if "appFNE" in frames:
+        loadAppNE(frames["appFNE"])
+    '''
+    if "appFCW" in frames:
+        loadAppCW(frames["appFCW"])
+    '''
+    if "appFCC" in frames:
+        loadAppCC(frames["appFCC"])
+
+    if "appFCE" in frames:
+        loadAppCE(frames["appFCE"])
+
+    if "appFSW" in frames:
+        loadAppSW(frames["appFSW"])
+
+    if "appFSC" in frames:
+        loadAppSC(frames["appFSC"])
+
+    if "appFSE" in frames:
+        loadAppSE(frames["appFSE"])
+    '''
 
 # FUNCTION TO LOAD WIDGETS TO FRAMES
 # function to load the login window widgets
 def loadLogin(frame):
-    global widgets
-    global strings
-
     # setup a stringvar for the username entry
-    strings["usernameEntry"] = StringVar(name = "usernameEntry")
+    getStrings()["usernameEntry"] = StringVar(name = "usernameEntry")
     # setup a stringvar for the password
-    strings["passwordEntry"] = StringVar(name = "passwordEntry")
+    getStrings()["passwordEntry"] = StringVar(name = "passwordEntry")
 
 
     # username label
@@ -75,7 +117,7 @@ def loadLogin(frame):
     # create a username entry widget
     usernameEntry = Entry(
         frame,
-        textvariable = strings["usernameEntry"],
+        textvariable = getStrings()["usernameEntry"],
     )
     usernameEntry.focus()
 
@@ -88,7 +130,7 @@ def loadLogin(frame):
     # create a password entry widget
     passwordEntry = Entry(
         frame,
-        textvariable = strings["passwordEntry"],
+        textvariable = getStrings()["passwordEntry"],
         show = '*'
     )
 
@@ -121,4 +163,101 @@ def loadLogin(frame):
 
 # function to load app window widgets
 def loadApp(frame):
-    print("App")
+    print("app")
+    
+
+def loadAppNW(frame):
+    getStrings()["booksOwned"] = StringVar(name = "booksOwned")
+    getStrings()["booksOwned"].set("Libri: " + str(getBooksOwned()))
+
+
+    userLabel = Label(
+        frame,
+        text = "User: " + getUser(),
+    )
+
+    booksLabel = Label(
+        frame,
+        textvariable = getStrings()["booksOwned"]
+    )
+
+    userLabel.pack(pady = (10, 0), padx = (10, 0), anchor = W)
+    booksLabel.pack(pady = (0, 10), padx = (10, 0), anchor = W)
+
+
+def loadAppNC(frame):
+    getInts()["showRadio"] = IntVar(name = "showRadio")
+    getInts()["showRadio"].set(0)
+
+    showLabel = Label(
+        frame,
+        text = "Mostra: "
+    )
+
+    libraryRadio = Radiobutton(
+        frame,
+        text = "Libreria",
+        variable = getInts()["showRadio"],
+        value = 0,
+        command = switchView
+    )
+
+    ownedRadio = Radiobutton(
+        frame,
+        text = "Posseduti",
+        variable = getInts()["showRadio"],
+        value = 1,
+        command = switchView
+    )
+
+
+    showLabel.pack(side = LEFT, padx = (30, 0))
+    libraryRadio.pack(side = LEFT)
+    ownedRadio.pack(side = LEFT)
+
+
+def loadAppCW(frame):
+    #books = Listbox(frame)
+    
+    result = sendMySQL("SELECT * FROM libri;")
+
+    columns = ('genere', 'titolo', 'autore', 'casaeditrice', 'anno', 'luogo')
+
+    books = Treeview(
+        frame,
+        columns = columns,
+        show = 'headings'
+    )
+
+    books.heading('genere', text="Genere")
+    books.heading('titolo', text="Titolo")
+    books.heading('autore', text="Autore")
+    books.heading('casaeditrice', text="Casa Editrice")
+    books.heading('anno', text="Anno")
+    books.heading('luogo', text="Luogo")
+
+    for i in range(len(result)):
+        books.insert('', END, values = (
+            result[i][0],
+            result[i][1],
+            result[i][2],
+            result[i][3],
+            result[i][4],
+            result[i][5],
+        ))
+
+    scrollbar = Scrollbar(frame, orient=VERTICAL, command=books.yview)
+    books.configure(yscroll=scrollbar.set)
+
+    books.bind('<<TreeviewSelect>>', selectedBook)
+    
+    books.pack(expand = True, fill = "both", side = LEFT)
+    scrollbar.pack(side = LEFT, fill = Y)
+    
+    widgets["books"] = books
+    
+
+    #print(result[0])
+
+
+

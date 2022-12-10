@@ -37,11 +37,68 @@ def loadAppFrames():
     # create an empty dictionary of frames
     frames = dict()
 
+    getWindow().rowconfigure(0, weight = 0)
+    getWindow().rowconfigure(1, weight = 9)
+    getWindow().rowconfigure(2, weight = 1)
+    getWindow().columnconfigure(0, weight = 0)
+    getWindow().columnconfigure(1, weight = 5)
+    getWindow().columnconfigure(2, weight = 0)
+    #getWindow().rowconfigure(1, weight = 0)
+
+    relief = "flat"
+
     # create the frame for the app
-    appF = Frame(getWindow())
+    appFNW = Frame(getWindow())
+    appFNW["relief"] = relief
+    appFNW.grid(column = 0, row = 0, sticky = "nsew")
+    #appFNW.rowconfigure(0, weight = 1)
+    #appFNW.columnconfigure(0, weight = 1)
+
+    appFNC = Frame(getWindow())
+    appFNC["relief"] = relief
+    appFNC.grid(column = 1, row = 0, sticky = "nsew")
+
+    appFNE = Frame(getWindow())
+    appFNE["relief"] = relief
+    appFNE.grid(column = 2, row = 0, sticky = "nsew")
+
+    appFCW = Frame(getWindow())
+    appFCW["relief"] = relief
+    appFCW.grid(column = 0, row = 1, columnspan = 3, sticky = "nsew")
+
+    appFCC = Frame(getWindow())
+    appFCC["relief"] = relief
+    #appFCC.grid(column = 1, row = 1, sticky = "nsew")
+
+    appFCE = Frame(getWindow())
+    appFCE["relief"] = relief
+    #appFCE.grid(column = 2, row = 1, sticky = "nsew")
+
+    appFSW = Frame(getWindow())
+    appFSW["relief"] = relief
+    appFSW.grid(column = 0, row = 2, sticky = "nsew")
+
+    appFSC = Frame(getWindow())
+    appFSC["relief"] = relief
+    appFSC.grid(column = 1, row = 2, sticky = "nsew")
+
+    appFSE = Frame(getWindow())
+    appFSE["relief"] = relief
+    appFSE.grid(column = 2, row = 2, sticky = "nsew")
+
 
     # load the app frame
-    frames["appF"] = appF
+    frames["appFNW"] = appFNW
+    frames["appFNC"] = appFNC
+    frames["appFNE"] = appFNE
+    frames["appFCW"] = appFCW
+    frames["appFCC"] = appFCC
+    frames["appFCE"] = appFCE
+    frames["appFSW"] = appFSW
+    frames["appFSC"] = appFSC
+    frames["appFSE"] = appFSE
+
+
 
     # return all the frames
     return(frames)

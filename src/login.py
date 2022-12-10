@@ -18,6 +18,7 @@ def login(username, password):
     else:
         return(False)
 
+
 # REGISTER FUNCTION
 def register(username, password):
     # apply a hash function to the password
