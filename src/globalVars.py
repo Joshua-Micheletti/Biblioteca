@@ -1,13 +1,17 @@
 import mysql.connector
+from ttkthemes import ThemedTk
 
 # window object
 window = None
+# search window
+searchWindow = None
+
 # flag to keep track of the login
-loggedIn = False # MOCK DATA
+loggedIn = True # MOCK DATA
 # flag to keep track of the program execution
 running = True
 # string for the logged in user
-user = "" # MOCK DATA
+user = "joshua" # MOCK DATA
 
 booksOwned = 20 # MOCK DATA
 
@@ -17,7 +21,7 @@ ints = dict()
 
 # MySQL database connection
 mydb = mysql.connector.connect(
-			host = "localhost",
+			host = "solidgallium.ddns.net",
 			user = "josh",
 			password = "password",
 			database = "biblioteca"
@@ -47,7 +51,23 @@ def sendMySQL(command):
         # return the result of the command
         return(result)
 
+def closeProgramCallback(event):
+    global running
+    global window
 
+    running = False
+    window.destroy()
+
+def closeSearchWindowCallback(event):
+    global searchWindow
+    searchWindow.destroy()
+
+def closeProgram():
+    global running
+    global window
+
+    running = False
+    window.destroy()
 
 # SETTERS AND GETTERS FOR GLOBAL VARIABLES
 def getWindow():
@@ -58,6 +78,15 @@ def setWindow(newWindow):
     global window
     window = newWindow
 
+
+
+def getSearchWindow():
+    global searchWindow
+    return(searchWindow)
+
+def setSearchWindow(newWindow):
+    global setSearchWindow
+    searchWindow = newWindow
 
 def checkLoggedIn():
     global loggedIn
@@ -106,3 +135,7 @@ def setStrings(newStrings):
 def getInts():
     global ints
     return(ints)
+
+def getRunning():
+    global running
+    return(running)

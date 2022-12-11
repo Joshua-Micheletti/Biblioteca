@@ -1,13 +1,11 @@
 from tkinter.ttk import *
 from globalVars import *
 
-def loadStyle():
-    window = getWindow()
-
-    style = Style(window)
+def loadStyle(currentWindow):
+    style = Style(currentWindow)
     
-    window.tk.call("source", "./themes/azure/azure.tcl")
-    window.tk.call("set_theme", "dark")
+    currentWindow.tk.call("source", "./themes/azure/azure.tcl")
+    currentWindow.tk.call("set_theme", "dark")
 
     style.configure("Warning.TLabel",
         foreground = "#f0ad4e",
@@ -18,6 +16,6 @@ def loadStyle():
         font = ("Arial", 30)
     )
 
-    setWindow(window)
+    #setWindow(window)
 
     #style.configure(".", font = ("Arial", 30))

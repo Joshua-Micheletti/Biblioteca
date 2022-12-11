@@ -6,11 +6,14 @@ from frames import *
 from globalVars import *
 from hashlib import sha256
 from login import *
+from window import *
 
 widgets = dict()
 
 # function to handle clicks
 def clickHandler(*args):
+    print(args[0])
+
     # login behaviour
     if args[0] == "login":
         if login(getStrings()["usernameEntry"].get(), getStrings()["passwordEntry"].get()):
@@ -42,6 +45,21 @@ def clickHandler(*args):
             messagebox.showerror("Register Error",
                                  "Error: username already exists!")
 
+
+    if args[0] == "logout":
+        setLogin(False)
+        setUser("")
+        getWindow().destroy()
+
+
+    if args[0] == "close":
+        closeProgram()
+
+
+    if args[0] == "search":
+        createSearchWindow()
+
+
 def switchView():
     value = getInts()["showRadio"].get()
     print(value)
@@ -71,33 +89,36 @@ def loadWidgets(frames):
     if "appF" in frames:
         loadApp(frames["appF"])
 
-    if "appFNW" in frames:
-        loadAppNW(frames["appFNW"])
+    if "appFUserInfo" in frames:
+        loadAppUserInfo(frames["appFUserInfo"])
     
-    if "appFNC" in frames:
-        loadAppNC(frames["appFNC"])
-    '''
-    if "appFNE" in frames:
-        loadAppNE(frames["appFNE"])
-    '''
-    if "appFCW" in frames:
-        loadAppCW(frames["appFCW"])
+    if "appFDisplayOptions" in frames:
+        loadAppDisplayOptions(frames["appFDisplayOptions"])
+    
+    if "appFSearch" in frames:
+        loadAppSearch(frames["appFSearch"])
+    
+    if "appFDatabase" in frames:
+        loadAppDatabase(frames["appFDatabase"])
     '''
     if "appFCC" in frames:
         loadAppCC(frames["appFCC"])
 
     if "appFCE" in frames:
         loadAppCE(frames["appFCE"])
-
-    if "appFSW" in frames:
-        loadAppSW(frames["appFSW"])
-
+    '''
+    if "appFLogout" in frames:
+        loadAppLogout(frames["appFLogout"])
+    '''
     if "appFSC" in frames:
         loadAppSC(frames["appFSC"])
 
     if "appFSE" in frames:
         loadAppSE(frames["appFSE"])
     '''
+
+    if "searchFrame" in frames:
+        loadSearch(frames["searchFrame"])
 
 # FUNCTION TO LOAD WIDGETS TO FRAMES
 # function to load the login window widgets
@@ -166,7 +187,7 @@ def loadApp(frame):
     print("app")
     
 
-def loadAppNW(frame):
+def loadAppUserInfo(frame):
     getStrings()["booksOwned"] = StringVar(name = "booksOwned")
     getStrings()["booksOwned"].set("Libri: " + str(getBooksOwned()))
 
@@ -185,7 +206,7 @@ def loadAppNW(frame):
     booksLabel.pack(pady = (0, 10), padx = (10, 0), anchor = W)
 
 
-def loadAppNC(frame):
+def loadAppDisplayOptions(frame):
     getInts()["showRadio"] = IntVar(name = "showRadio")
     getInts()["showRadio"].set(0)
 
@@ -210,15 +231,22 @@ def loadAppNC(frame):
         command = switchView
     )
 
-
     showLabel.pack(side = LEFT, padx = (30, 0))
     libraryRadio.pack(side = LEFT)
     ownedRadio.pack(side = LEFT)
 
 
-def loadAppCW(frame):
-    #books = Listbox(frame)
-    
+def loadAppSearch(frame):
+    searchButton = Button(
+        frame,
+        text = "Search",
+        command = lambda: clickHandler("search")
+    )
+
+    searchButton.pack(padx = 10, pady = 15)
+
+
+def loadAppDatabase(frame):    
     result = sendMySQL("SELECT * FROM libri;")
 
     columns = ('genere', 'titolo', 'autore', 'casaeditrice', 'anno', 'luogo')
@@ -255,9 +283,31 @@ def loadAppCW(frame):
     scrollbar.pack(side = LEFT, fill = Y)
     
     widgets["books"] = books
-    
-
-    #print(result[0])
 
 
+def loadAppLogout(frame):
+
+    closeButton = Button(
+        frame,
+        text = "Close",
+        command = lambda: clickHandler("close")
+    )
+
+    logoutButton = Button(
+        frame,
+        text = "Logout",
+        command = lambda: clickHandler("logout")
+    )
+
+
+    closeButton.pack(padx = 10, pady = 10, side = LEFT)
+    logoutButton.pack(padx = 10, pady = 10, side = LEFT)
+
+
+def loadSearch(frame):
+    closeButton = Button(
+        frame,
+        text = "Close",
+        command = lambda: getSearchWindow().destroy()
+    ).pack()
 
