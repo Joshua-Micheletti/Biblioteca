@@ -51,16 +51,7 @@ def sendMySQL(command):
         # return the result of the command
         return(result)
 
-def closeProgramCallback(event):
-    global running
-    global window
 
-    running = False
-    window.destroy()
-
-def closeSearchWindowCallback(event):
-    global searchWindow
-    searchWindow.destroy()
 
 def closeProgram():
     global running
@@ -85,7 +76,7 @@ def getSearchWindow():
     return(searchWindow)
 
 def setSearchWindow(newWindow):
-    global setSearchWindow
+    global searchWindow
     searchWindow = newWindow
 
 def checkLoggedIn():
@@ -139,3 +130,7 @@ def getInts():
 def getRunning():
     global running
     return(running)
+
+def setRunning(newRunning):
+    global running
+    running = newRunning

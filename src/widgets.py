@@ -2,6 +2,7 @@ from tkinter.ttk import *
 from tkinter import PhotoImage
 from tkinter import StringVar
 from tkinter import messagebox
+from tkinter import *
 from frames import *
 from globalVars import *
 from hashlib import sha256
@@ -57,7 +58,17 @@ def clickHandler(*args):
 
 
     if args[0] == "search":
-        createSearchWindow()
+        if getSearchWindow() is None:
+            searchWindow = createSearchWindow()
+            setSearchWindow(searchWindow)
+            loadWidgets(loadSearchFrames())
+        else:
+            if not Toplevel.winfo_exists(getSearchWindow()):
+                searchWindow = createSearchWindow()
+                setSearchWindow(searchWindow)
+                loadWidgets(loadSearchFrames())
+
+    
 
 
 def switchView():
@@ -305,9 +316,95 @@ def loadAppLogout(frame):
 
 
 def loadSearch(frame):
-    closeButton = Button(
+    #if getString()["genereEntry"].get()
+    if not "genereEntry" in getStrings():
+        getStrings()["genereEntry"] = StringVar(name = "genereEntry")
+    if not "titoloEntry" in getStrings():
+        getStrings()["titoloEntry"] = StringVar(name = "titoloEntry")
+    if not "autoreEntry" in getStrings():
+        getStrings()["autoreEntry"] = StringVar(name = "autoreEntry")
+    if not "casaeditriceEntry" in getStrings():
+        getStrings()["casaeditriceEntry"] = StringVar(name = "casaeditriceEntry")
+    if not "annoEntry" in getStrings():
+        getStrings()["annoEntry"] = StringVar(name = "annoEntry")
+    if not "luogoEntry" in getStrings():
+        getStrings()["luogoEntry"] = StringVar(name = "luogoEntry")
+
+    genereLabel = Label(
         frame,
-        text = "Close",
-        command = lambda: getSearchWindow().destroy()
-    ).pack()
+        text = "Genere"
+    )
+    genereEntry = Entry(
+        frame,
+        textvariable = getStrings()["genereEntry"]
+    )
+
+    titoloLabel = Label(
+        frame,
+        text = "Titolo"
+    )
+    titoloEntry = Entry(
+        frame,
+        textvariable = getStrings()["titoloEntry"]
+    )
+
+    autoreLabel = Label(
+        frame,
+        text = "Autore"
+    )
+    autoreEntry = Entry(
+        frame,
+        textvariable = getStrings()["autoreEntry"]
+    )
+
+    casaeditriceLabel = Label(
+        frame,
+        text = "Casa Editrice"
+    )
+    casaeditriceEntry = Entry(
+        frame,
+        textvariable = getStrings()["casaeditriceEntry"]
+    )
+
+    annoLabel = Label(
+        frame,
+        text = "Anno"
+    )
+    annoEntry = Entry(
+        frame,
+        textvariable = getStrings()["annoEntry"]
+    )
+
+    luogoLabel = Label(
+        frame,
+        text = "Luogo"
+    )
+    luogoEntry = Entry(
+        frame,
+        textvariable = getStrings()["luogoEntry"]
+    )
+
+    searchQueryButton = Button(
+        frame,
+        text = "Search",
+        command = lambda: clickHandler("searchQuery")
+    )
+
+    genereLabel.grid(row = 0, column = 0, pady = 5, padx = 5)
+    genereEntry.grid(row = 0, column = 1, pady = 5, padx = 5, sticky="nsew")
+    titoloLabel.grid(row = 1, column = 0, pady = 5, padx = 5)
+    titoloEntry.grid(row = 1, column = 1, pady = 5, padx = 5, sticky="nsew")
+    autoreLabel.grid(row = 2, column = 0, pady = 5, padx = 5)
+    autoreEntry.grid(row = 2, column = 1, pady = 5, padx = 5, sticky="nsew")
+    casaeditriceLabel.grid(row = 3, column = 0, pady = 5, padx = 5)
+    casaeditriceEntry.grid(row = 3, column = 1, pady = 5, padx = 5, sticky = "nsew")
+    annoLabel.grid(row = 4, column = 0, pady = 5, padx = 5)
+    annoEntry.grid(row = 4, column = 1, pady = 5, padx = 5, sticky="nsew")
+    luogoLabel.grid(row = 5, column = 0, pady = 5, padx = 5)
+    luogoEntry.grid(row = 5, column = 1, pady = 5, padx = 5, sticky="nsew")
+    searchQueryButton.grid(row = 6, column = 0, columnspan = 2, pady = (10, 5), padx = 5, sticky = "nsew")
+
+
+
+
 

@@ -3,6 +3,14 @@ from ttkthemes import ThemedTk
 from globalVars import *
 from style import *
 
+def closeProgramCallback(event):
+    setRunning(False)
+    getWindow().destroy()
+
+def closeSearchWindowCallback(event):
+    getSearchWindow().destroy()
+
+
 # function to create windows
 def createAppWindow():
     window = getWindow()
@@ -49,11 +57,6 @@ def createSearchWindow():
     searchWindow.bind('<Escape>', closeSearchWindowCallback)   # bind the escape button to close the program
 
     #loadStyle(searchWindow)
-
-    closeButton = Button(
-        searchWindow,
-        text = "Close",
-        command = searchWindow.destroy
-    ).pack()
-
     setSearchWindow(searchWindow)
+
+    return(searchWindow)

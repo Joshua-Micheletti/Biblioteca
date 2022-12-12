@@ -21,8 +21,6 @@ def main():
             loadWidgets(loadAppFrames())
             getWindow().mainloop()
 
-        print("test")
-
     
 # start of the program
 if __name__ == "__main__":

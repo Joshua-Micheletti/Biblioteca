@@ -105,7 +105,22 @@ def loadAppFrames():
 def loadSearchFrames():
     frames = dict()
 
+    getSearchWindow().rowconfigure(0, weight = 1)
+    getSearchWindow().columnconfigure(0, weight = 1)
+
     searchFrame = Frame(getSearchWindow())
+
+    searchFrame.grid(column = 0, row = 0, sticky = "nsew")
+
+    searchFrame.rowconfigure(0, weight = 1)
+    searchFrame.rowconfigure(1, weight = 1)
+    searchFrame.rowconfigure(2, weight = 1)
+    searchFrame.rowconfigure(3, weight = 1)
+    searchFrame.rowconfigure(4, weight = 1)
+    searchFrame.rowconfigure(5, weight = 1)
+    searchFrame.rowconfigure(6, weight = 1)
+    searchFrame.columnconfigure(0, weight = 0)
+    searchFrame.columnconfigure(1, weight = 3)
 
     frames["searchFrame"] = searchFrame
 
