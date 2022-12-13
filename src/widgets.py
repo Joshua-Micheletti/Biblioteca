@@ -68,7 +68,69 @@ def clickHandler(*args):
                 setSearchWindow(searchWindow)
                 loadWidgets(loadSearchFrames())
 
-    
+    if args[0] == "searchQuery":
+        children = widgets["books"].get_children()
+        for child in children:
+            widgets["books"].delete(child)
+
+        query = "SELECT * FROM libri "
+
+        where = True
+
+        if getStrings()["genereEntry"].get() != "":
+            query += "WHERE Genere LIKE '%" + getStrings()["genereEntry"].get() + "%' "
+            where = False
+
+        if getStrings()["titoloEntry"].get() != "":
+            if where:
+                query += "WHERE Titolo LIKE '%" + getStrings()["titoloEntry"].get() + "%' "
+                where = False
+            else:
+                query += "AND Titolo LIKE '%" + getStrings()["titoloEntry"].get() + "%' "
+
+        if getStrings()["autoreEntry"].get() != "":
+            if where:
+                query += "WHERE Autore LIKE '%" + getStrings()["autoreEntry"].get() + "%' "
+                where = False
+            else:
+                query += "AND Autore LIKE '%" + getStrings()["autoreEntry"].get() + "%' "
+
+        if getStrings()["casaeditriceEntry"].get() != "":
+            if where:
+                query += "WHERE CasaEditrice LIKE '%" + getStrings()["casaeditriceEntry"].get() + "%' "
+                where = False
+            else:
+                query += "AND CasaEditrice LIKE '%" + getStrings()["casaeditriceEntry"].get() + "%' "
+
+        if getStrings()["annoEntry"].get() != "":
+            if where:
+                query += "WHERE Anno LIKE '%" + getStrings()["annoEntry"].get() + "%' "
+                where = False
+            else:
+                query += "AND Anno LIKE '%" + getStrings()["annoEntry"].get() + "%' "
+
+        if getStrings()["luogoEntry"].get() != "":
+            if where:
+                query += "WHERE Luogo LIKE '%" + getStrings()["luogoEntry"].get() + "%' "
+                where = False
+            else:
+                query += "AND Luogo LIKE '%" + getStrings()["luogoEntry"].get() + "%' "
+
+
+        query += ";"
+
+        result = sendMySQL(query)
+
+        for i in range(len(result)):
+            widgets["books"].insert('', END, values = (
+                result[i][0],
+                result[i][1],
+                result[i][2],
+                result[i][3],
+                result[i][4],
+                result[i][5],
+            ))
+
 
 
 def switchView():
