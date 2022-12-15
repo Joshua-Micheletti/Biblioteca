@@ -50,8 +50,12 @@ def clickHandler(*args):
     if args[0] == "logout":
         setLogin(False)
         setUser("")
-        getWindow().destroy()
 
+        if getSearchWindow() != None:
+            closeSearchWindow()
+
+        getWindow().destroy()
+        
 
     if args[0] == "close":
         closeProgram()
@@ -59,15 +63,9 @@ def clickHandler(*args):
 
     if args[0] == "search":
         if getSearchWindow() is None:
-            searchWindow = createSearchWindow()
-            setSearchWindow(searchWindow)
+            createSearchWindow()
             loadWidgets(loadSearchFrames())
-        else:
-            if not Toplevel.winfo_exists(getSearchWindow()):
-                searchWindow = createSearchWindow()
-                setSearchWindow(searchWindow)
-                loadWidgets(loadSearchFrames())
-                
+
                 
     if args[0] == "searchQuery":
         children = widgets["books"].get_children()
@@ -134,7 +132,7 @@ def clickHandler(*args):
 
 
     if args[0] == "searchClose":
-        getSearchWindow().destroy()
+        closeSearchWindow()
 
     
     if args[0] == "searchClear":
@@ -145,6 +143,33 @@ def clickHandler(*args):
         getStrings()["annoEntry"].set("")
         getStrings()["luogoEntry"].set("")
 
+
+    if args[0] == "addBook":
+        if getBookWindow() is None:
+            createBookWindow()
+            loadWidgets(loadBookFrames("add"))
+    
+
+    if args[0] == "modifyBook":
+        # CHANGE TO FEATURE THE SELECTED BOOK
+        if len(widgets["books"].selection()) == 0:
+            messagebox.showerror("Selection Error",
+                                 "No book selected")
+            return()
+
+        if getBookWindow() is None:
+            createBookWindow()
+            loadWidgets(loadBookFrames("modify"))
+
+            item = widgets["books"].item(widgets["books"].selection()[0])
+            values = item['values']
+
+            getStrings()["newGenereEntry"].set(values[0])
+            getStrings()["newTitoloEntry"].set(values[1])
+            getStrings()["newAutoreEntry"].set(values[2])
+            getStrings()["newCasaeditriceEntry"].set(values[3])
+            getStrings()["newAnnoEntry"].set(values[4])
+            getStrings()["newLuogoEntry"].set(values[5])
 
 def switchView():
     value = getInts()["showRadio"].get()
@@ -198,16 +223,24 @@ def loadWidgets(frames):
     '''
     if "appFSC" in frames:
         loadAppSC(frames["appFSC"])
-
-    if "appFSE" in frames:
-        loadAppSE(frames["appFSE"])
     '''
+    if "appFModifyLibrary" in frames:
+        loadAppModifyLibrary(frames["appFModifyLibrary"])
 
     if "searchFrame" in frames:
         loadSearch(frames["searchFrame"])
 
     if "searchButtonsFrame" in frames:
         loadSearchButtons(frames["searchButtonsFrame"])
+
+    if "bookFrame" in frames:
+        loadBook(frames["bookFrame"])
+
+    if "bookAddFrame" in frames:
+        loadBookAdd(frames["bookAddFrame"])
+
+    if "bookModifyFrame" in frames:
+        loadBookModify(frames["bookModifyFrame"])
 
 # FUNCTION TO LOAD WIDGETS TO FRAMES
 # function to load the login window widgets
@@ -332,7 +365,7 @@ def loadAppSearch(frame):
         command = lambda: clickHandler("search")
     )
 
-    searchButton.pack(padx = 10, pady = 15)
+    searchButton.pack(side = RIGHT, padx = 10, pady = 15)
 
 
 def loadAppDatabase(frame):
@@ -392,6 +425,31 @@ def loadAppLogout(frame):
 
     closeButton.pack(padx = 10, pady = 10, side = LEFT)
     logoutButton.pack(padx = 10, pady = 10, side = LEFT)
+
+
+def loadAppModifyLibrary(frame):
+    addButton = Button(
+        frame,
+        text = "Add Book",
+        command = lambda: clickHandler("addBook")
+    )
+
+    removeButton = Button(
+        frame,
+        text = "Remove Book",
+        command = lambda: clickHandler("removeBook")
+    )
+
+    modifyButton = Button(
+        frame,
+        text = "Modify Book",
+        command = lambda: clickHandler("modifyBook")
+    )
+
+
+    addButton.pack(side = RIGHT, padx = 10)
+    removeButton.pack(side = RIGHT, padx = 10)
+    modifyButton.pack(side = RIGHT, padx = 10)
 
 
 def loadSearch(frame):
@@ -500,3 +558,89 @@ def loadSearchButtons(frame):
     searchCloseButton.grid(row = 0, column = 0, pady = (10, 5), padx = 5, sticky = "nsew")
     searchClearButton.grid(row = 0, column = 1, pady = (10, 5), padx = 5, sticky = "nsew")
     searchQueryButton.grid(row = 0, column = 2, pady = (10, 5), padx = 5, sticky = "nsew")
+
+
+def loadBook(frame):
+    getStrings()["newGenereEntry"] = StringVar(name = "newGenereEntry")
+    getStrings()["newTitoloEntry"] = StringVar(name = "newTitoloEntry")
+    getStrings()["newAutoreEntry"] = StringVar(name = "newAutoreEntry")
+    getStrings()["newCasaeditriceEntry"] = StringVar(name = "newCasaeditriceEntry")
+    getStrings()["newAnnoEntry"] = StringVar(name = "newAnnoEntry")
+    getStrings()["newLuogoEntry"] = StringVar(name = "newLuogoEntry")
+
+    genereLabel = Label(
+        frame,
+        text = "Genere"
+    )
+    genereEntry = Entry(
+        frame,
+        textvariable = getStrings()["newGenereEntry"]
+    )
+
+    titoloLabel = Label(
+        frame,
+        text = "Titolo"
+    )
+    titoloEntry = Entry(
+        frame,
+        textvariable = getStrings()["newTitoloEntry"]
+    )
+
+    autoreLabel = Label(
+        frame,
+        text = "Autore"
+    )
+    autoreEntry = Entry(
+        frame,
+        textvariable = getStrings()["newAutoreEntry"]
+    )
+
+    casaeditriceLabel = Label(
+        frame,
+        text = "Casa Editrice"
+    )
+    casaeditriceEntry = Entry(
+        frame,
+        textvariable = getStrings()["newCasaeditriceEntry"]
+    )
+
+    annoLabel = Label(
+        frame,
+        text = "Anno"
+    )
+    annoEntry = Entry(
+        frame,
+        textvariable = getStrings()["newAnnoEntry"]
+    )
+
+    luogoLabel = Label(
+        frame,
+        text = "Luogo"
+    )
+    luogoEntry = Entry(
+        frame,
+        textvariable = getStrings()["newLuogoEntry"]
+    )
+
+    
+
+    genereLabel.grid(row = 0, column = 0, pady = 5, padx = 5)
+    genereEntry.grid(row = 0, column = 1, pady = 5, padx = 5, sticky="nsew")
+    titoloLabel.grid(row = 1, column = 0, pady = 5, padx = 5)
+    titoloEntry.grid(row = 1, column = 1, pady = 5, padx = 5, sticky="nsew")
+    autoreLabel.grid(row = 2, column = 0, pady = 5, padx = 5)
+    autoreEntry.grid(row = 2, column = 1, pady = 5, padx = 5, sticky="nsew")
+    casaeditriceLabel.grid(row = 3, column = 0, pady = 5, padx = 5)
+    casaeditriceEntry.grid(row = 3, column = 1, pady = 5, padx = 5, sticky = "nsew")
+    annoLabel.grid(row = 4, column = 0, pady = 5, padx = 5)
+    annoEntry.grid(row = 4, column = 1, pady = 5, padx = 5, sticky="nsew")
+    luogoLabel.grid(row = 5, column = 0, pady = 5, padx = 5)
+    luogoEntry.grid(row = 5, column = 1, pady = 5, padx = 5, sticky="nsew")
+
+
+def loadBookAdd(frame):
+    print("add")
+
+
+def loadBookModify(frame):
+    print("modify")

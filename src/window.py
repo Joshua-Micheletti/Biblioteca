@@ -9,6 +9,11 @@ def closeProgramCallback(event):
 
 def closeSearchWindowCallback(event):
     getSearchWindow().destroy()
+    setSearchWindow(None)
+
+def closeBookWindowCallback(event):
+    getBookWindow().destroy()
+    setBookWindow(None)
 
 
 # function to create windows
@@ -42,7 +47,6 @@ def createLoginWindow():
     loadStyle(window)
     setWindow(window)
 
-
 def createSearchWindow():
     searchWindow = getSearchWindow()
 
@@ -60,3 +64,19 @@ def createSearchWindow():
     setSearchWindow(searchWindow)
 
     return(searchWindow)
+
+def createBookWindow():
+    bookWindow = getBookWindow()
+
+    bookWindow = Toplevel()
+    bookWindow.geometry("500x300")
+    bookWindow.title("Libro")
+    bookWindow.resizable(FALSE, FALSE)
+    bookWindow.minsize(500, 300)
+    bookWindow.attributes('-alpha', 1)
+    bookWindow.bind('<Escape>', closeBookWindowCallback)
+
+    setBookWindow(bookWindow)
+
+    return(bookWindow)
+

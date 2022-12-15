@@ -82,9 +82,9 @@ def loadAppFrames():
     appFSC["relief"] = relief
     appFSC.grid(column = 1, row = 2, sticky = "nsew")
 
-    appFSE = Frame(getWindow())
-    appFSE["relief"] = relief
-    appFSE.grid(column = 2, row = 2, sticky = "nsew")
+    appFModifyLibrary = Frame(getWindow())
+    appFModifyLibrary["relief"] = relief
+    appFModifyLibrary.grid(column = 2, row = 2, sticky = "nsew")
 
 
     # load the app frame
@@ -96,7 +96,7 @@ def loadAppFrames():
     frames["appFCE"] = appFCE
     frames["appFLogout"] = appFLogout
     frames["appFSC"] = appFSC
-    frames["appFSE"] = appFSE
+    frames["appFModifyLibrary"] = appFModifyLibrary
 
     # return all the frames
     return(frames)
@@ -137,4 +137,40 @@ def loadSearchFrames():
     return(frames)
 
 
+def loadBookFrames(function):
+    frames = dict()
+
+    getBookWindow().rowconfigure(0, weight = 1)
+    getBookWindow().columnconfigure(0, weight = 1)
+
+    bookFrame = Frame(getBookWindow())
+
+    bookFrame.grid(column = 0, row = 0, sticky = "nsew")
+
+    bookFrame.rowconfigure(0, weight = 1)
+    bookFrame.rowconfigure(1, weight = 1)
+    bookFrame.rowconfigure(2, weight = 1)
+    bookFrame.rowconfigure(3, weight = 1)
+    bookFrame.rowconfigure(4, weight = 1)
+    bookFrame.rowconfigure(5, weight = 1)
+    bookFrame.rowconfigure(6, weight = 1)
+    bookFrame.columnconfigure(0, weight = 0)
+    bookFrame.columnconfigure(1, weight = 3)
+
+    bookFunctionsFrame = Frame(bookFrame)
+
+    bookFunctionsFrame.grid(column = 1, row = 6, columnspan = 1, sticky = "nsew")
+
+    bookFunctionsFrame.rowconfigure(0, weight = 1)
+    bookFunctionsFrame.columnconfigure(0, weight = 0)
+    bookFunctionsFrame.columnconfigure(1, weight = 3)
+
+    frames["bookFrame"] = bookFrame
+     
+    if function == "add":
+        frames["bookAddFrame"] = bookFunctionsFrame
+    elif function == "modify":
+        frames["bookModifyFrame"] = bookFunctionsFrame
+
+    return(frames)
     

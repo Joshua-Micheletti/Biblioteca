@@ -5,6 +5,8 @@ from ttkthemes import ThemedTk
 window = None
 # search window
 searchWindow = None
+# book window
+bookWindow = None
 
 # flag to keep track of the login
 loggedIn = True # MOCK DATA
@@ -60,6 +62,8 @@ def sendMySQL(command):
 
 
 
+
+
 def closeProgram():
     global running
     global window
@@ -85,6 +89,26 @@ def getSearchWindow():
 def setSearchWindow(newWindow):
     global searchWindow
     searchWindow = newWindow
+
+def closeSearchWindow():
+    global searchWindow
+    searchWindow.destroy()
+    searchWindow = None
+
+
+def getBookWindow():
+    global bookWindow
+    return(bookWindow)
+
+def setBookWindow(newWindow):
+    global bookWindow
+    bookWindow = newWindow
+
+def closeBookWindow():
+    global bookWindow
+    bookWindow.destroy()
+    bookWindow = None
+
 
 def checkLoggedIn():
     global loggedIn
