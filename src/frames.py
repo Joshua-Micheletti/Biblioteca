@@ -122,7 +122,17 @@ def loadSearchFrames():
     searchFrame.columnconfigure(0, weight = 0)
     searchFrame.columnconfigure(1, weight = 3)
 
+    searchButtonsFrame = Frame(searchFrame)
+
+    searchButtonsFrame.grid(column = 0, row = 6, columnspan = 2, sticky = "nsew")
+
+    searchButtonsFrame.rowconfigure(0, weight = 0)
+    searchButtonsFrame.columnconfigure(0, weight = 0)
+    searchButtonsFrame.columnconfigure(1, weight = 0)
+    searchButtonsFrame.columnconfigure(2, weight = 2)
+
     frames["searchFrame"] = searchFrame
+    frames["searchButtonsFrame"] = searchButtonsFrame
 
     return(frames)
 

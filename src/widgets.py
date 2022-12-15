@@ -67,7 +67,8 @@ def clickHandler(*args):
                 searchWindow = createSearchWindow()
                 setSearchWindow(searchWindow)
                 loadWidgets(loadSearchFrames())
-
+                
+                
     if args[0] == "searchQuery":
         children = widgets["books"].get_children()
         for child in children:
@@ -132,6 +133,18 @@ def clickHandler(*args):
             ))
 
 
+    if args[0] == "searchClose":
+        getSearchWindow().destroy()
+
+    
+    if args[0] == "searchClear":
+        getStrings()["genereEntry"].set("")
+        getStrings()["titoloEntry"].set("")
+        getStrings()["autoreEntry"].set("")
+        getStrings()["casaeditriceEntry"].set("")
+        getStrings()["annoEntry"].set("")
+        getStrings()["luogoEntry"].set("")
+
 
 def switchView():
     value = getInts()["showRadio"].get()
@@ -192,6 +205,9 @@ def loadWidgets(frames):
 
     if "searchFrame" in frames:
         loadSearch(frames["searchFrame"])
+
+    if "searchButtonsFrame" in frames:
+        loadSearchButtons(frames["searchButtonsFrame"])
 
 # FUNCTION TO LOAD WIDGETS TO FRAMES
 # function to load the login window widgets
@@ -319,7 +335,7 @@ def loadAppSearch(frame):
     searchButton.pack(padx = 10, pady = 15)
 
 
-def loadAppDatabase(frame):    
+def loadAppDatabase(frame):
     result = sendMySQL("SELECT * FROM libri;")
 
     columns = ('genere', 'titolo', 'autore', 'casaeditrice', 'anno', 'luogo')
@@ -337,15 +353,16 @@ def loadAppDatabase(frame):
     books.heading('anno', text="Anno")
     books.heading('luogo', text="Luogo")
 
-    for i in range(len(result)):
-        books.insert('', END, values = (
-            result[i][0],
-            result[i][1],
-            result[i][2],
-            result[i][3],
-            result[i][4],
-            result[i][5],
-        ))
+    if result != None:
+        for i in range(len(result)):
+            books.insert('', END, values = (
+                result[i][0],
+                result[i][1],
+                result[i][2],
+                result[i][3],
+                result[i][4],
+                result[i][5],
+            ))
 
     scrollbar = Scrollbar(frame, orient=VERTICAL, command=books.yview)
     books.configure(yscroll=scrollbar.set)
@@ -378,7 +395,6 @@ def loadAppLogout(frame):
 
 
 def loadSearch(frame):
-    #if getString()["genereEntry"].get()
     if not "genereEntry" in getStrings():
         getStrings()["genereEntry"] = StringVar(name = "genereEntry")
     if not "titoloEntry" in getStrings():
@@ -446,11 +462,7 @@ def loadSearch(frame):
         textvariable = getStrings()["luogoEntry"]
     )
 
-    searchQueryButton = Button(
-        frame,
-        text = "Search",
-        command = lambda: clickHandler("searchQuery")
-    )
+    
 
     genereLabel.grid(row = 0, column = 0, pady = 5, padx = 5)
     genereEntry.grid(row = 0, column = 1, pady = 5, padx = 5, sticky="nsew")
@@ -464,9 +476,27 @@ def loadSearch(frame):
     annoEntry.grid(row = 4, column = 1, pady = 5, padx = 5, sticky="nsew")
     luogoLabel.grid(row = 5, column = 0, pady = 5, padx = 5)
     luogoEntry.grid(row = 5, column = 1, pady = 5, padx = 5, sticky="nsew")
-    searchQueryButton.grid(row = 6, column = 0, columnspan = 2, pady = (10, 5), padx = 5, sticky = "nsew")
 
 
+def loadSearchButtons(frame):
+    searchCloseButton = Button(
+        frame,
+        text = "Close",
+        command = lambda: clickHandler("searchClose")
+    )
 
+    searchClearButton = Button(
+        frame,
+        text = "Clear",
+        command = lambda: clickHandler("searchClear")
+    )
 
+    searchQueryButton = Button(
+        frame,
+        text = "Search",
+        command = lambda: clickHandler("searchQuery")
+    )
 
+    searchCloseButton.grid(row = 0, column = 0, pady = (10, 5), padx = 5, sticky = "nsew")
+    searchClearButton.grid(row = 0, column = 1, pady = (10, 5), padx = 5, sticky = "nsew")
+    searchQueryButton.grid(row = 0, column = 2, pady = (10, 5), padx = 5, sticky = "nsew")

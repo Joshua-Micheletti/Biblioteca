@@ -19,15 +19,22 @@ strings = dict()
 
 ints = dict()
 
-# MySQL database connection
-mydb = mysql.connector.connect(
-			host = "solidgallium.ddns.net",
-			user = "josh",
-			password = "password",
-			database = "biblioteca"
-		)
-# cursor to issue commands to the database
-cursor = mydb.cursor(buffered = True)
+mydb = None
+
+try:
+    # MySQL database connection
+    mydb = mysql.connector.connect(
+                host = "solidgallium.ddns.net",
+                user = "josh",
+                password = "password",
+                database = "biblioteca"
+            )
+    # cursor to issue commands to the database
+    cursor = mydb.cursor(buffered = True)
+
+except Exception as e:
+    print(e)
+
 
 # function to send commands to the database
 def sendMySQL(command):
@@ -41,13 +48,13 @@ def sendMySQL(command):
         print(cursor)
         # store the result
         result = cursor.fetchall()
+        # commit the changes to the database
+        mydb.commit()
     
     except Exception as e:
         print(e)
 
     finally:
-        # commit the changes to the database
-        mydb.commit()
         # return the result of the command
         return(result)
 
