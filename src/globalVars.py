@@ -1,5 +1,6 @@
 import mysql.connector
 from ttkthemes import ThemedTk
+from tkinter import *
 
 # window object
 window = None

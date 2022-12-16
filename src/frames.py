@@ -159,7 +159,7 @@ def loadBookFrames(function):
 
     bookFunctionsFrame = Frame(bookFrame)
 
-    bookFunctionsFrame.grid(column = 1, row = 6, columnspan = 1, sticky = "nsew")
+    bookFunctionsFrame.grid(column = 0, row = 6, columnspan = 2, sticky = "nsew")
 
     bookFunctionsFrame.rowconfigure(0, weight = 1)
     bookFunctionsFrame.columnconfigure(0, weight = 0)

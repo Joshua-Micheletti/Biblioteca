@@ -14,7 +14,7 @@ def main():
         if not getLogin():
             createLoginWindow()
             loadWidgets(loadLoginFrames()) # load the frames and the widgets
-            getWindow().mainloop()                       # run the app
+            getWindow().mainloop()         # run the app
 
         else:
             createAppWindow()

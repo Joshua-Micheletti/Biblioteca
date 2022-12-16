@@ -151,7 +151,6 @@ def clickHandler(*args):
     
 
     if args[0] == "modifyBook":
-        # CHANGE TO FEATURE THE SELECTED BOOK
         if len(widgets["books"].selection()) == 0:
             messagebox.showerror("Selection Error",
                                  "No book selected")
@@ -171,6 +170,89 @@ def clickHandler(*args):
             getStrings()["newAnnoEntry"].set(values[4])
             getStrings()["newLuogoEntry"].set(values[5])
 
+    
+    if args[0] == "removeBook":
+        if len(widgets["books"].selection()) == 0:
+            messagebox.showerror("Selection Error",
+                                 "No book selected")
+            return()
+
+        for selected_item in widgets["books"].selection():
+            item = widgets["books"].item(selected_item)
+            values = item['values']
+            
+            for i in range(len(values)):
+                if i != 4:
+                    values[i] = values[i].replace("'", "''")
+
+            sendMySQL("DELETE FROM libri " +
+                      "WHERE Genere = '" + values[0] + "' " +
+                      "AND Titolo = '" + values[1] + "' " +
+                      "AND Autore = '" + values[2] + "' " +
+                      "AND CasaEditrice = '" + values[3] + "' " +
+                      "AND Anno = '" + str(values[4]) + "' " +
+                      "AND Luogo = '" + values[5] + "';")
+
+        clickHandler("searchQuery")          
+
+
+    if args[0] == "addBookSQL":
+        columns = []
+        values = []
+
+        if getStrings()["newGenereEntry"].get() != "":
+            columns.append("Genere")
+            values.append(getStrings()["newGenereEntry"].get())
+
+        if getStrings()["newTitoloEntry"].get() != "":
+            columns.append("Titolo")
+            values.append(getStrings()["newTitoloEntry"].get())
+
+        if getStrings()["newAutoreEntry"].get() != "":
+            columns.append("Autore")
+            values.append(getStrings()["newAutoreEntry"].get())
+
+        if getStrings()["newCasaeditriceEntry"].get() != "":
+            columns.append("CasaEditrice")
+            values.append(getStrings()["newCasaeditriceEntry"].get())
+
+        if getStrings()["newAnnoEntry"].get() != "":
+            columns.append("Anno")
+            values.append(getStrings()["newAnnoEntry"].get())
+
+        if getStrings()["newLuogoEntry"].get() != "":
+            columns.append("Luogo")
+            values.append(getStrings()["newLuogoEntry"].get())
+
+        if len(columns) == 0:
+            messagebox.showerror("Insert Error",
+                                 "No book info provided")
+            return()
+
+        tableColumns = ""
+        tableValues = ""
+
+        for i in range(len(columns)):
+            tableColumns += columns[i]
+            tableValues += "'" + values[i] + "'"
+
+            if i != len(columns) - 1:
+                tableColumns += ", "
+                tableValues += ", "
+
+        sendMySQL("INSERT INTO libri(" + tableColumns + ") " +
+                  "VALUES (" + tableValues + ");")
+
+        clickHandler("searchQuery")
+
+
+    if args[0] == "modifyBookSQL":
+        print("nai")
+
+
+    if args[0] == "closeBook":
+        closeBookWindow()
+
 def switchView():
     value = getInts()["showRadio"].get()
     print(value)
@@ -188,6 +270,16 @@ def selectedBook(event):
         #messagebox.showinfo(title='Information', message=','.join(record))
 
     print(selectedBooks)
+
+    item = widgets["books"].item(widgets["books"].selection()[0])
+    values = item['values']
+
+    getStrings()["newGenereEntry"].set(values[0])
+    getStrings()["newTitoloEntry"].set(values[1])
+    getStrings()["newAutoreEntry"].set(values[2])
+    getStrings()["newCasaeditriceEntry"].set(values[3])
+    getStrings()["newAnnoEntry"].set(values[4])
+    getStrings()["newLuogoEntry"].set(values[5])
 
 
 # function to load widgets into the respective frames
@@ -639,8 +731,34 @@ def loadBook(frame):
 
 
 def loadBookAdd(frame):
-    print("add")
+    addBookButton = Button(
+        frame,
+        text = "Add",
+        command = lambda: clickHandler("addBookSQL")
+    )
+
+    closeBookButton = Button(
+        frame,
+        text = "Close",
+        command = lambda: clickHandler("closeBook")
+    )
+
+    closeBookButton.grid(row = 0, column = 0, pady = (10, 5), padx = 5, sticky = "nsew")
+    addBookButton.grid(row = 0, column = 1, pady = (10, 5), padx = 5, sticky = "nsew")
 
 
 def loadBookModify(frame):
-    print("modify")
+    modifyBookButton = Button(
+        frame,
+        text = "Modify",
+        command = lambda: clickHandler("modifyBookSQL")
+    )
+
+    closeBookButton = Button(
+        frame,
+        text = "Close",
+        command = lambda: clickHandler("closeBook")
+    )
+
+    closeBookButton.grid(row = 0, column = 0, pady = (10, 5), padx = 5, sticky = "nsew")
+    modifyBookButton.grid(row = 0, column = 1, pady = (10, 5), padx = 5, sticky = "nsew")
