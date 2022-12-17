@@ -1,6 +1,4 @@
 import mysql.connector
-from ttkthemes import ThemedTk
-from tkinter import *
 
 # window object
 window = None
@@ -60,9 +58,6 @@ def sendMySQL(command):
     finally:
         # return the result of the command
         return(result)
-
-
-
 
 
 def closeProgram():

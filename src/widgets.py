@@ -24,6 +24,9 @@ def clickHandler(*args):
             setUser(getStrings()["usernameEntry"].get())
             # destroy the window (replace with function)
             getWindow().destroy()
+            
+            createAppWindow()
+            loadWidgets(loadAppFrames())
 
         else:
             # notify the user that the login info is incorrect
@@ -53,12 +56,17 @@ def clickHandler(*args):
 
         if getSearchWindow() != None:
             closeSearchWindow()
+        if getBookWindow() != None:
+            closeBookWindow()
 
         getWindow().destroy()
         
-
+        createLoginWindow()
+        loadWidgets(loadLoginFrames())
+        
+        
     if args[0] == "close":
-        closeProgram()
+        getWindow().destroy()
 
 
     if args[0] == "search":
@@ -75,45 +83,46 @@ def clickHandler(*args):
         query = "SELECT * FROM libri "
 
         where = True
-
-        if getStrings()["genereEntry"].get() != "":
-            query += "WHERE Genere LIKE '%" + getStrings()["genereEntry"].get() + "%' "
-            where = False
-
-        if getStrings()["titoloEntry"].get() != "":
-            if where:
-                query += "WHERE Titolo LIKE '%" + getStrings()["titoloEntry"].get() + "%' "
+            
+        if "genereEntry" in getStrings():
+            if getStrings()["genereEntry"].get() != "":
+                query += "WHERE Genere LIKE '%" + getStrings()["genereEntry"].get() + "%' "
                 where = False
-            else:
-                query += "AND Titolo LIKE '%" + getStrings()["titoloEntry"].get() + "%' "
 
-        if getStrings()["autoreEntry"].get() != "":
-            if where:
-                query += "WHERE Autore LIKE '%" + getStrings()["autoreEntry"].get() + "%' "
-                where = False
-            else:
-                query += "AND Autore LIKE '%" + getStrings()["autoreEntry"].get() + "%' "
+            if getStrings()["titoloEntry"].get() != "":
+                if where:
+                    query += "WHERE Titolo LIKE '%" + getStrings()["titoloEntry"].get() + "%' "
+                    where = False
+                else:
+                    query += "AND Titolo LIKE '%" + getStrings()["titoloEntry"].get() + "%' "
 
-        if getStrings()["casaeditriceEntry"].get() != "":
-            if where:
-                query += "WHERE CasaEditrice LIKE '%" + getStrings()["casaeditriceEntry"].get() + "%' "
-                where = False
-            else:
-                query += "AND CasaEditrice LIKE '%" + getStrings()["casaeditriceEntry"].get() + "%' "
+            if getStrings()["autoreEntry"].get() != "":
+                if where:
+                    query += "WHERE Autore LIKE '%" + getStrings()["autoreEntry"].get() + "%' "
+                    where = False
+                else:
+                    query += "AND Autore LIKE '%" + getStrings()["autoreEntry"].get() + "%' "
 
-        if getStrings()["annoEntry"].get() != "":
-            if where:
-                query += "WHERE Anno LIKE '%" + getStrings()["annoEntry"].get() + "%' "
-                where = False
-            else:
-                query += "AND Anno LIKE '%" + getStrings()["annoEntry"].get() + "%' "
+            if getStrings()["casaeditriceEntry"].get() != "":
+                if where:
+                    query += "WHERE CasaEditrice LIKE '%" + getStrings()["casaeditriceEntry"].get() + "%' "
+                    where = False
+                else:
+                    query += "AND CasaEditrice LIKE '%" + getStrings()["casaeditriceEntry"].get() + "%' "
 
-        if getStrings()["luogoEntry"].get() != "":
-            if where:
-                query += "WHERE Luogo LIKE '%" + getStrings()["luogoEntry"].get() + "%' "
-                where = False
-            else:
-                query += "AND Luogo LIKE '%" + getStrings()["luogoEntry"].get() + "%' "
+            if getStrings()["annoEntry"].get() != "":
+                if where:
+                    query += "WHERE Anno LIKE '%" + getStrings()["annoEntry"].get() + "%' "
+                    where = False
+                else:
+                    query += "AND Anno LIKE '%" + getStrings()["annoEntry"].get() + "%' "
+
+            if getStrings()["luogoEntry"].get() != "":
+                if where:
+                    query += "WHERE Luogo LIKE '%" + getStrings()["luogoEntry"].get() + "%' "
+                    where = False
+                else:
+                    query += "AND Luogo LIKE '%" + getStrings()["luogoEntry"].get() + "%' "
 
 
         query += ";"
@@ -247,7 +256,47 @@ def clickHandler(*args):
 
 
     if args[0] == "modifyBookSQL":
-        print("nai")
+        oldGenere = widgets["books"].item(widgets["books"].selection())["values"][0].replace("'", "''")
+        oldTitolo = widgets["books"].item(widgets["books"].selection())["values"][1].replace("'", "''")
+        oldAutore = widgets["books"].item(widgets["books"].selection())["values"][2].replace("'", "''")
+        oldCasaeditrice = widgets["books"].item(widgets["books"].selection())["values"][3].replace("'", "''")
+        oldAnno = str(widgets["books"].item(widgets["books"].selection())["values"][4])
+        oldLuogo = widgets["books"].item(widgets["books"].selection())["values"][5].replace("'", "''")
+        
+        columns = []
+        
+        if getStrings()["newGenereEntry"] != "":
+            columns.append("Genere = '" + getStrings()["newGenereEntry"].get().replace("'", "''") + "'")
+        if getStrings()["newTitoloEntry"] != "":
+            columns.append("Titolo = '" + getStrings()["newTitoloEntry"].get().replace("'", "''") + "'")
+        if getStrings()["newAutoreEntry"] != "":
+            columns.append("Autore = '" + getStrings()["newAutoreEntry"].get().replace("'", "''") + "'")
+        if getStrings()["newCasaeditriceEntry"] != "":
+            columns.append("CasaEditrice = '" + getStrings()["newCasaeditriceEntry"].get().replace("'", "''") + "'")
+        if getStrings()["newAnnoEntry"] != "":
+            columns.append("Anno = '" + getStrings()["newAnnoEntry"].get().replace("'", "''") + "'")
+        if getStrings()["newLuogoEntry"] != "":
+            columns.append("Luogo = '" + getStrings()["newLuogoEntry"].get().replace("'", "''") + "'")
+            
+        command = ""
+            
+        for i in range(len(columns)):
+            if i != len(columns) - 1:
+                command += columns[i] + ", "
+            else:
+                command += columns[i] + " "
+        
+        sendMySQL("UPDATE libri " +
+                  "SET " + command +
+                  "WHERE Genere = '" + oldGenere + "' " +
+                  "AND Titolo = '" + oldTitolo + "' " + 
+                  "AND Autore = '" + oldAutore + "' " + 
+                  "AND CasaEditrice = '" + oldCasaeditrice + "' " + 
+                  "AND Anno = '" + oldAnno + "' " + 
+                  "AND Luogo = '" + oldLuogo + "' "
+        )
+        
+        clickHandler("searchQuery")
 
 
     if args[0] == "closeBook":
@@ -274,12 +323,14 @@ def selectedBook(event):
     item = widgets["books"].item(widgets["books"].selection()[0])
     values = item['values']
 
+    '''
     getStrings()["newGenereEntry"].set(values[0])
     getStrings()["newTitoloEntry"].set(values[1])
     getStrings()["newAutoreEntry"].set(values[2])
     getStrings()["newCasaeditriceEntry"].set(values[3])
     getStrings()["newAnnoEntry"].set(values[4])
     getStrings()["newLuogoEntry"].set(values[5])
+    '''
 
 
 # function to load widgets into the respective frames
@@ -501,7 +552,6 @@ def loadAppDatabase(frame):
 
 
 def loadAppLogout(frame):
-
     closeButton = Button(
         frame,
         text = "Close",

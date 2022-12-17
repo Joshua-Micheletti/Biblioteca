@@ -9,17 +9,15 @@ from ttkthemes import ThemedTk
 # MAIN FUNCTION
 def main():
     # create a window for as long as the program is running
-    while getRunning():
-        
-        if not getLogin():
-            createLoginWindow()
-            loadWidgets(loadLoginFrames()) # load the frames and the widgets
-            getWindow().mainloop()         # run the app
+    if not getLogin():
+        createLoginWindow()
+        loadWidgets(loadLoginFrames()) # load the frames and the widgets
+        getWindow().mainloop()         # run the app
 
-        else:
-            createAppWindow()
-            loadWidgets(loadAppFrames())
-            getWindow().mainloop()
+    else:
+        createAppWindow()
+        loadWidgets(loadAppFrames())
+        getWindow().mainloop()
 
     
 # start of the program
