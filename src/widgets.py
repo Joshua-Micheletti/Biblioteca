@@ -454,7 +454,9 @@ def loadApp(frame):
 
 def loadAppUserInfo(frame):
     getStrings()["booksOwned"] = StringVar(name = "booksOwned")
-    getStrings()["booksOwned"].set("Libri: " + str(getBooksOwned()))
+    getStrings()["booksOwned"].set("Libro: " + str(getBooksOwned()))
+
+    result = sendMySQL()
 
 
     userLabel = Label(

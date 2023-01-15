@@ -3,12 +3,14 @@ USE biblioteca;
 DROP TABLE IF EXISTS libri;
 
 CREATE TABLE libri (
+    ID int NOT NULL AUTO_INCREMENT,
     Genere varchar(255),
     Titolo varchar(255),
     Autore varchar(255),
     CasaEditrice varchar(255),
     Anno int,
-    Luogo varchar(255)
+    Luogo varchar(255),
+    PRIMARY KEY (ID)
 );
 
 LOAD DATA INFILE '/var/lib/mysql-files/BIBLIOTECA.csv' 
@@ -22,6 +24,23 @@ IGNORE 2 ROWS;
 DROP TABLE IF EXISTS utenti;
 
 CREATE TABLE utenti (
-    Nome varchar(255),
-    Password varchar(255)
+    Nome varchar(255) NOT NULL,
+    Password varchar(255) NOT NULL,
+    IDLibro int,
+    PRIMARY KEY (Nome, Password),
+    FOREIGN KEY (IDLibro) REFERENCES libri(ID)
+);
+
+
+DROP TABLE IF EXISTS restituzioni;
+
+CREATE TABLE restituzioni (
+    Nome varchar(255) NOT NULL,
+    Password varchar(255) NOT NULL,
+    IDLibro int NOT NULL,
+    Voto int,
+    Commento varchar(1023),
+    PRIMARY KEY (Nome, Password, IDLibro),
+    FOREIGN KEY (Nome, Password) REFERENCES utenti(Nome, Password),
+    FOREIGN KEY (IDLibro) REFERENCES libri(ID)
 );

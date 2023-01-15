@@ -25,7 +25,7 @@ mydb = None
 try:
     # MySQL database connection
     mydb = mysql.connector.connect(
-                host = "solidgallium.ddns.net",
+                host = "192.168.0.105",
                 user = "josh",
                 password = "password",
                 database = "biblioteca"
