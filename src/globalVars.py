@@ -6,13 +6,17 @@ window = None
 searchWindow = None
 # book window
 bookWindow = None
+# reviews window
+reviewsWindow = None
+
 
 # flag to keep track of the login
-loggedIn = True # MOCK DATA
+loggedIn = False # MOCK DATA
 # flag to keep track of the program execution
 running = True
 # string for the logged in user
 user = "joshua" # MOCK DATA
+password = ""
 
 booksOwned = 20 # MOCK DATA
 
@@ -104,6 +108,20 @@ def closeBookWindow():
     global bookWindow
     bookWindow.destroy()
     bookWindow = None
+    
+
+def getReviewsWindow():
+    global reviewsWindow
+    return(reviewsWindow)
+
+def setReviewsWindow(newWindow):
+    global reviewsWindow
+    reviewsWindow = newWindow
+
+def closeReviewsWindow():
+    global reviewsWindow
+    reviewsWindow.destroy()
+    reviewsWindow = None
 
 
 def checkLoggedIn():
@@ -130,6 +148,15 @@ def setUser(newUser):
 def getUser():
     global user
     return(user)
+
+
+def setPassword(newPassword):
+    global password
+    password = newPassword
+    
+def getPassword():
+    global password
+    return(password)
 
 
 def setBooksOwned(newBooks):

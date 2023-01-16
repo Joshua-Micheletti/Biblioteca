@@ -6,12 +6,35 @@ from style import *
 def closeProgramCallback(event):
     setRunning(False)
     getWindow().destroy()
+    
+def closeProgramWindowManager():
+    setRunning(False)
+    getWindow().destroy()
+    
 
 def closeSearchWindowCallback(event):
     getSearchWindow().destroy()
     setSearchWindow(None)
+    
+def closeSearchWindowManager():
+    getSearchWindow().destroy()
+    setSearchWindow(None)
+    
 
 def closeBookWindowCallback(event):
+    getBookWindow().destroy()
+    setBookWindow(None)
+    
+def closeBookWindowManager():
+    getBookWindow().destroy()
+    setBookWindow(None)
+    
+    
+def closeReviewsWindowCallback(event):
+    getBookWindow().destroy()
+    setBookWindow(None)
+    
+def closeReviewsWindowManager():
     getBookWindow().destroy()
     setBookWindow(None)
 
@@ -24,6 +47,7 @@ def createAppWindow():
     window.title("Libreria")
     window.resizable(FALSE, FALSE)
     window.bind('<Escape>', closeProgramCallback)
+    window.protocol("WM_DELETE_WINDOW", closeProgramWindowManager)
 
     loadStyle(window)
     setWindow(window)
@@ -43,6 +67,7 @@ def createLoginWindow():
     #window.attributes('-topmost', 1)       # window always on top
     window.iconphoto(False, PhotoImage(file = './data/icon.png')) # load the icon
     window.bind('<Escape>', closeProgramCallback)   # bind the escape button to close the program
+    window.protocol("WM_DELETE_WINDOW", closeProgramWindowManager)
     
     loadStyle(window)
     setWindow(window)
@@ -59,11 +84,13 @@ def createSearchWindow():
     #window.attributes('-topmost', 1)       # window always on top
     #searchWindow.iconphoto(False, PhotoImage(file = './data/icon.png')) # load the icon
     searchWindow.bind('<Escape>', closeSearchWindowCallback)   # bind the escape button to close the program
+    searchWindow.protocol("WM_DELETE_WINDOW", closeSearchWindowManager)
 
     #loadStyle(searchWindow)
     setSearchWindow(searchWindow)
 
     return(searchWindow)
+
 
 def createBookWindow():
     bookWindow = getBookWindow()
@@ -75,8 +102,26 @@ def createBookWindow():
     bookWindow.minsize(500, 300)
     bookWindow.attributes('-alpha', 1)
     bookWindow.bind('<Escape>', closeBookWindowCallback)
+    bookWindow.protocol("WM_DELETE_WINDOW", closeBookWindowManager)
 
     setBookWindow(bookWindow)
 
     return(bookWindow)
+
+
+def createReviewsWindow():
+    reviewsWindow = getReviewsWindow()
+
+    reviewsWindow = Toplevel()
+    reviewsWindow.geometry("500x300")
+    reviewsWindow.title("Recensioni")
+    reviewsWindow.resizable(FALSE, FALSE)
+    reviewsWindow.minsize(500, 300)
+    reviewsWindow.attributes('-alpha', 1)
+    reviewsWindow.bind('<Escape>', closeBookWindowCallback)
+    reviewsWindow.protocol("WM_DELETE_WINDOW", closeBookWindowManager)
+
+    setReviewsWindow(reviewsWindow)
+
+    return(reviewsWindow)
 

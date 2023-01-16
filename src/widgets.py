@@ -22,6 +22,7 @@ def clickHandler(*args):
             setLogin(True)
             # set the logged in user
             setUser(getStrings()["usernameEntry"].get())
+            setPassword(getStrings()["passwordEntry"].get())
             # destroy the window (replace with function)
             getWindow().destroy()
             
@@ -131,12 +132,12 @@ def clickHandler(*args):
 
         for i in range(len(result)):
             widgets["books"].insert('', END, values = (
-                result[i][0],
                 result[i][1],
                 result[i][2],
                 result[i][3],
                 result[i][4],
                 result[i][5],
+                result[i][6],
             ))
 
 
@@ -456,7 +457,12 @@ def loadAppUserInfo(frame):
     getStrings()["booksOwned"] = StringVar(name = "booksOwned")
     getStrings()["booksOwned"].set("Libro: " + str(getBooksOwned()))
 
-    result = sendMySQL()
+    result = sendMySQL("SELECT Titolo " +
+                       "FROM libri " +
+                       "WHERE ID = (" +
+                            "SELECT IDLibro " +
+                            "FROM utenti " +
+                            "WHERE Nome")
 
 
     userLabel = Label(
@@ -534,12 +540,12 @@ def loadAppDatabase(frame):
     if result != None:
         for i in range(len(result)):
             books.insert('', END, values = (
-                result[i][0],
                 result[i][1],
                 result[i][2],
                 result[i][3],
                 result[i][4],
                 result[i][5],
+                result[i][6],
             ))
 
     scrollbar = Scrollbar(frame, orient=VERTICAL, command=books.yview)
