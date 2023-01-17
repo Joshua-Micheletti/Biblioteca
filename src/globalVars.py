@@ -20,7 +20,7 @@ running = True
 user = "joshua" # MOCK DATA
 password = ""
 
-booksOwned = 20 # MOCK DATA
+booksOwned = "" # MOCK DATA
 
 strings = dict()
 

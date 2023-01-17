@@ -297,6 +297,51 @@ def clickHandler(*args):
             loadWidgets(loadReviewsFrame())
 
 
+    if args[0] == "borrow":
+        if len(widgets["books"].selection()) == 0:
+            messagebox.showerror("Selection Error",
+                                 "No book selected")
+            return()
+
+        hashedPassword = sha256(getPassword().encode('utf-8')).hexdigest()
+        selectedBook = str(widgets["books"].item(widgets["books"].selection())["values"][0])
+        
+        ownedBook = sendMySQL("SELECT IDLibro " +
+                              "FROM utenti " +
+                              "WHERE Nome = '" + getUser() + "' "
+                              "AND Password = '" + hashedPassword + "';")
+        
+        if not(ownedBook[0][0] is None):
+            print("this turned true")
+            messagebox.showerror("Borrow Error",
+                                 "You already have a book borrowed")
+            return()
+        
+        
+        availability = sendMySQL("SELECT IDLibro " +
+                                 "FROM utenti " +
+                                 "WHERE IDLibro = '" + selectedBook + "';")
+        
+        if len(availability) != 0:
+            messagebox.showerror("Selection Error",
+                                 "Book has been already borrowed")
+            return()
+        
+        
+        sendMySQL("UPDATE utenti " +
+                  "SET IDLibro = '" + selectedBook + "' " +
+                  "WHERE Nome = '" + getUser() + "' " +
+                  "AND Password = '" + hashedPassword + "';")
+        
+        setBooksOwned(widgets["books"].item(widgets["books"].selection())["values"][2])
+        
+        # widgets["booksLabel"].config(text = widgets["books"].item(widgets["books"].selection())["values"][2])
+        widgets["booksLabel"]["text"] = widgets["books"].item(widgets["books"].selection())["values"][2]
+
+        getWindow().update()
+        
+
+
 def switchView():
     value = getInts()["showRadio"].get()
     print(value)
@@ -454,14 +499,6 @@ def loadAppUserInfo(frame):
     getStrings()["booksOwned"] = StringVar(name = "booksOwned")
     getStrings()["booksOwned"].set("Libro: " + str(getBooksOwned()))
 
-    result = sendMySQL("SELECT Titolo " +
-                       "FROM libri " +
-                       "WHERE ID = (" +
-                            "SELECT IDLibro " +
-                            "FROM utenti " +
-                            "WHERE Nome);")
-
-
     userLabel = Label(
         frame,
         text = "User: " + getUser(),
@@ -474,6 +511,8 @@ def loadAppUserInfo(frame):
 
     userLabel.pack(pady = (10, 0), padx = (10, 0), anchor = W)
     booksLabel.pack(pady = (0, 10), padx = (10, 0), anchor = W)
+
+    widgets["booksLabel"] = booksLabel
 
 
 def loadAppManageBook(frame):
