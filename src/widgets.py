@@ -9,6 +9,7 @@ from hashlib import sha256
 from login import *
 from window import *
 
+# dictionary of widgets to reference them after their creation
 widgets = dict()
 
 # function to handle clicks
@@ -31,56 +32,70 @@ def clickHandler(*args):
 
         else:
             # notify the user that the login info is incorrect
-            print("WRONG LOGIN INFO")
-            messagebox.showerror("Login Error",
-                                 "Error: wrong login info!")
+            messagebox.showerror("Errore Login",
+                                 "Username e/o Password errati")
     
     # register behaviour
     if args[0] == "register":
         if register(getStrings()["usernameEntry"].get(), getStrings()["passwordEntry"].get()):
             # let the user know of the registration
-            messagebox.showinfo("Register Successful",
-                                "The user " +
+            messagebox.showinfo("Registrazione con successo",
+                                "L'utente " +
                                 getStrings()["usernameEntry"].get() +
-                                " is now registered")
+                                " è ora registrato")
         
         else:
             # notify the user that the username already exists
-            print("USERNAME ALREAD EXISTS")
-            messagebox.showerror("Register Error",
-                                 "Error: username already exists!")
+            messagebox.showerror("Errore Registrazione",
+                                 "Utente già esistente")
 
-
+    # logout behaviour
     if args[0] == "logout":
+        # set the login flag to false
         setLogin(False)
+        # reset the logged in user value
         setUser("")
 
+        # close all the pop-up windows
         if getSearchWindow() != None:
             closeSearchWindow()
         if getBookWindow() != None:
             closeBookWindow()
+        if getReviewsWindow() != None:
+            closeReviewsWindow()
+        if getReturnWindow() != None:
+            closeReturnWindow()
 
+        # close the main app window
         getWindow().destroy()
         
+        # create a new login window
         createLoginWindow()
+        # load its widgets
         loadWidgets(loadLoginFrames())
         
-        
+    # close behaviour   
     if args[0] == "close":
+        # close the main window
         getWindow().destroy()
 
-
+    # behaviour of the search button
     if args[0] == "search":
+        # if the search window isn't already opened
         if getSearchWindow() is None:
+            # create the search window
             createSearchWindow()
+            # load its widgets
             loadWidgets(loadSearchFrames())
 
-                
+    # behaviour of the search button in the search window            
     if args[0] == "searchQuery":
+        # delete the existing entries in the books list
         children = widgets["books"].get_children()
         for child in children:
             widgets["books"].delete(child)
 
+        # setup the query (attributes are searched with the LIKE %*attribute*% format)
         query = "SELECT * FROM libri "
 
         where = True
@@ -127,9 +142,10 @@ def clickHandler(*args):
 
 
         query += ";"
-
+        # send the query to the database
         result = sendMySQL(query)
 
+        # update the books widget with the new results from the search query
         for i in range(len(result)):
             widgets["books"].insert('', END, values = (
                 result[i][0],
@@ -141,12 +157,14 @@ def clickHandler(*args):
                 result[i][6],
             ))
 
-
+    # behaviour of the close button in the search window
     if args[0] == "searchClose":
+        # close the search window
         closeSearchWindow()
 
-    
+    # behaviour of the clear button in the search window
     if args[0] == "searchClear":
+        # reset the stringvar values for each entry of the search
         getStrings()["genereEntry"].set("")
         getStrings()["titoloEntry"].set("")
         getStrings()["autoreEntry"].set("")
@@ -154,26 +172,36 @@ def clickHandler(*args):
         getStrings()["annoEntry"].set("")
         getStrings()["luogoEntry"].set("")
 
-
+    # behaviour of the add book button
     if args[0] == "addBook":
+        # if the book window isn't already opened
         if getBookWindow() is None:
+            # create a book window
             createBookWindow()
+            # load its widgets (with the add parameter)
             loadWidgets(loadBookFrames("add"))
     
-
+    # behaviour of the modify book button
     if args[0] == "modifyBook":
+        # if no book is selected
         if len(widgets["books"].selection()) == 0:
+            # notify the error to the user
             messagebox.showerror("Selection Error",
                                  "No book selected")
             return()
 
+        # if the book window isn't already opened
         if getBookWindow() is None:
+            # create a book window
             createBookWindow()
+            # load its widgets (with the modify parameter)
             loadWidgets(loadBookFrames("modify"))
 
+            # get the selected book
             item = widgets["books"].item(widgets["books"].selection()[0])
             values = item['values']
-
+            
+            # set the stringvar for the entries in the window to the selected book values
             getStrings()["newGenereEntry"].set(values[1])
             getStrings()["newTitoloEntry"].set(values[2])
             getStrings()["newAutoreEntry"].set(values[3])
@@ -181,27 +209,32 @@ def clickHandler(*args):
             getStrings()["newAnnoEntry"].set(values[5])
             getStrings()["newLuogoEntry"].set(values[6])
 
-    
+    # behaviour of the remove book button
     if args[0] == "removeBook":
+        # if no book is selected
         if len(widgets["books"].selection()) == 0:
+            # notify the user of the error
             messagebox.showerror("Selection Error",
                                  "No book selected")
             return()
 
+        # for each book selected
         for selected_item in widgets["books"].selection():
             item = widgets["books"].item(selected_item)
             values = item['values']
-
+            # delete the entry from the database
             sendMySQL("DELETE FROM libri " +
                       "WHERE ID = '" + str(values[0]) + "';")
 
+        # update the view of the books by making a new search query
         clickHandler("searchQuery")          
 
-
+    # behaviour of the add book button in the book window
     if args[0] == "addBookSQL":
         columns = []
         values = []
 
+        # store the values of all the entries provided by the user
         if getStrings()["newGenereEntry"].get() != "":
             columns.append("Genere")
             values.append(getStrings()["newGenereEntry"].get())
@@ -226,11 +259,14 @@ def clickHandler(*args):
             columns.append("Luogo")
             values.append(getStrings()["newLuogoEntry"].get())
 
+        # if the user didn't provide a single entry for the new book
         if len(columns) == 0:
-            messagebox.showerror("Insert Error",
-                                 "No book info provided")
+            # notify the user of the error
+            messagebox.showerror("Errore di inserimento",
+                                 "Non è stata fornita nessuna informazioni sul libro")
             return()
 
+        # compose the query depending on the information provided
         tableColumns = ""
         tableValues = ""
 
@@ -241,13 +277,15 @@ def clickHandler(*args):
             if i != len(columns) - 1:
                 tableColumns += ", "
                 tableValues += ", "
-
+                
+        # send the query to the database
         sendMySQL("INSERT INTO libri(" + tableColumns + ") " +
                   "VALUES (" + tableValues + ");")
 
+        # update the view of the books by making a new search query
         clickHandler("searchQuery")
 
-
+    # behaviour of the modify book button in the book window
     if args[0] == "modifyBookSQL":
         bookID = str(widgets["books"].item(widgets["books"].selection())["values"][0])
         
