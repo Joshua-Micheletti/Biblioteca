@@ -132,6 +132,7 @@ def clickHandler(*args):
 
         for i in range(len(result)):
             widgets["books"].insert('', END, values = (
+                result[i][0],
                 result[i][1],
                 result[i][2],
                 result[i][3],
@@ -173,12 +174,12 @@ def clickHandler(*args):
             item = widgets["books"].item(widgets["books"].selection()[0])
             values = item['values']
 
-            getStrings()["newGenereEntry"].set(values[0])
-            getStrings()["newTitoloEntry"].set(values[1])
-            getStrings()["newAutoreEntry"].set(values[2])
-            getStrings()["newCasaeditriceEntry"].set(values[3])
-            getStrings()["newAnnoEntry"].set(values[4])
-            getStrings()["newLuogoEntry"].set(values[5])
+            getStrings()["newGenereEntry"].set(values[1])
+            getStrings()["newTitoloEntry"].set(values[2])
+            getStrings()["newAutoreEntry"].set(values[3])
+            getStrings()["newCasaeditriceEntry"].set(values[4])
+            getStrings()["newAnnoEntry"].set(values[5])
+            getStrings()["newLuogoEntry"].set(values[6])
 
     
     if args[0] == "removeBook":
@@ -190,18 +191,9 @@ def clickHandler(*args):
         for selected_item in widgets["books"].selection():
             item = widgets["books"].item(selected_item)
             values = item['values']
-            
-            for i in range(len(values)):
-                if i != 4:
-                    values[i] = values[i].replace("'", "''")
 
             sendMySQL("DELETE FROM libri " +
-                      "WHERE Genere = '" + values[0] + "' " +
-                      "AND Titolo = '" + values[1] + "' " +
-                      "AND Autore = '" + values[2] + "' " +
-                      "AND CasaEditrice = '" + values[3] + "' " +
-                      "AND Anno = '" + str(values[4]) + "' " +
-                      "AND Luogo = '" + values[5] + "';")
+                      "WHERE ID = '" + str(values[0]) + "';")
 
         clickHandler("searchQuery")          
 
@@ -257,12 +249,7 @@ def clickHandler(*args):
 
 
     if args[0] == "modifyBookSQL":
-        oldGenere = widgets["books"].item(widgets["books"].selection())["values"][0].replace("'", "''")
-        oldTitolo = widgets["books"].item(widgets["books"].selection())["values"][1].replace("'", "''")
-        oldAutore = widgets["books"].item(widgets["books"].selection())["values"][2].replace("'", "''")
-        oldCasaeditrice = widgets["books"].item(widgets["books"].selection())["values"][3].replace("'", "''")
-        oldAnno = str(widgets["books"].item(widgets["books"].selection())["values"][4])
-        oldLuogo = widgets["books"].item(widgets["books"].selection())["values"][5].replace("'", "''")
+        bookID = str(widgets["books"].item(widgets["books"].selection())["values"][0])
         
         columns = []
         
@@ -289,12 +276,7 @@ def clickHandler(*args):
         
         sendMySQL("UPDATE libri " +
                   "SET " + command +
-                  "WHERE Genere = '" + oldGenere + "' " +
-                  "AND Titolo = '" + oldTitolo + "' " + 
-                  "AND Autore = '" + oldAutore + "' " + 
-                  "AND CasaEditrice = '" + oldCasaeditrice + "' " + 
-                  "AND Anno = '" + oldAnno + "' " + 
-                  "AND Luogo = '" + oldLuogo + "' "
+                  "WHERE ID = '" + bookID + "';"
         )
         
         clickHandler("searchQuery")
@@ -302,6 +284,18 @@ def clickHandler(*args):
 
     if args[0] == "closeBook":
         closeBookWindow()
+
+
+    if args[0] == "seeReviews":
+        if len(widgets["books"].selection()) == 0:
+            messagebox.showerror("Selection Error",
+                                 "No book selected")
+            return()
+        
+        if getReviewsWindow() is None:
+            createReviewsWindow()
+            loadWidgets(loadReviewsFrame())
+
 
 def switchView():
     value = getInts()["showRadio"].get()
@@ -347,8 +341,8 @@ def loadWidgets(frames):
     if "appFUserInfo" in frames:
         loadAppUserInfo(frames["appFUserInfo"])
     
-    if "appFDisplayOptions" in frames:
-        loadAppDisplayOptions(frames["appFDisplayOptions"])
+    if "appFManageBook" in frames:
+        loadAppManageBook(frames["appFManageBook"])
     
     if "appFSearch" in frames:
         loadAppSearch(frames["appFSearch"])
@@ -364,10 +358,10 @@ def loadWidgets(frames):
     '''
     if "appFLogout" in frames:
         loadAppLogout(frames["appFLogout"])
-    '''
-    if "appFSC" in frames:
-        loadAppSC(frames["appFSC"])
-    '''
+
+    if "appFReview" in frames:
+        loadAppReview(frames["appFReview"])
+        
     if "appFModifyLibrary" in frames:
         loadAppModifyLibrary(frames["appFModifyLibrary"])
 
@@ -385,6 +379,9 @@ def loadWidgets(frames):
 
     if "bookModifyFrame" in frames:
         loadBookModify(frames["bookModifyFrame"])
+        
+    if "reviewsFrame" in frames:
+        loadReviews(frames["reviewsFrame"])
 
 # FUNCTION TO LOAD WIDGETS TO FRAMES
 # function to load the login window widgets
@@ -462,7 +459,7 @@ def loadAppUserInfo(frame):
                        "WHERE ID = (" +
                             "SELECT IDLibro " +
                             "FROM utenti " +
-                            "WHERE Nome")
+                            "WHERE Nome);")
 
 
     userLabel = Label(
@@ -479,34 +476,22 @@ def loadAppUserInfo(frame):
     booksLabel.pack(pady = (0, 10), padx = (10, 0), anchor = W)
 
 
-def loadAppDisplayOptions(frame):
-    getInts()["showRadio"] = IntVar(name = "showRadio")
-    getInts()["showRadio"].set(0)
-
-    showLabel = Label(
+def loadAppManageBook(frame):
+    borrowButton = Button(
         frame,
-        text = "Mostra: "
+        text = "Prendi in prestito",
+        command = lambda: clickHandler("borrow")
     )
-
-    libraryRadio = Radiobutton(
+    
+    returnButton = Button(
         frame,
-        text = "Libreria",
-        variable = getInts()["showRadio"],
-        value = 0,
-        command = switchView
+        text = "Restituisci Libro",
+        command = lambda: clickHandler("return")
     )
-
-    ownedRadio = Radiobutton(
-        frame,
-        text = "Posseduti",
-        variable = getInts()["showRadio"],
-        value = 1,
-        command = switchView
-    )
-
-    showLabel.pack(side = LEFT, padx = (30, 0))
-    libraryRadio.pack(side = LEFT)
-    ownedRadio.pack(side = LEFT)
+    
+    
+    borrowButton.pack(side = LEFT, padx = 10, pady = 15)
+    returnButton.pack(side = LEFT, padx = 10, pady = 15)
 
 
 def loadAppSearch(frame):
@@ -522,7 +507,7 @@ def loadAppSearch(frame):
 def loadAppDatabase(frame):
     result = sendMySQL("SELECT * FROM libri;")
 
-    columns = ('genere', 'titolo', 'autore', 'casaeditrice', 'anno', 'luogo')
+    columns = ('id', 'genere', 'titolo', 'autore', 'casaeditrice', 'anno', 'luogo')
 
     books = Treeview(
         frame,
@@ -540,6 +525,7 @@ def loadAppDatabase(frame):
     if result != None:
         for i in range(len(result)):
             books.insert('', END, values = (
+                result[i][0],
                 result[i][1],
                 result[i][2],
                 result[i][3],
@@ -550,6 +536,7 @@ def loadAppDatabase(frame):
 
     scrollbar = Scrollbar(frame, orient=VERTICAL, command=books.yview)
     books.configure(yscroll=scrollbar.set)
+    books["displaycolumns"] = ('genere', 'titolo', 'autore', 'casaeditrice', 'anno', 'luogo')
 
     books.bind('<<TreeviewSelect>>', selectedBook)
     
@@ -575,6 +562,17 @@ def loadAppLogout(frame):
 
     closeButton.pack(padx = 10, pady = 10, side = LEFT)
     logoutButton.pack(padx = 10, pady = 10, side = LEFT)
+
+
+def loadAppReview(frame):
+    reviewButton = Button(
+        frame,
+        text = "See Reviews",
+        command = lambda: clickHandler("seeReviews")
+    )
+    
+    reviewButton.pack(padx = 10, pady = 10)
+
 
 
 def loadAppModifyLibrary(frame):
@@ -772,8 +770,6 @@ def loadBook(frame):
         textvariable = getStrings()["newLuogoEntry"]
     )
 
-    
-
     genereLabel.grid(row = 0, column = 0, pady = 5, padx = 5)
     genereEntry.grid(row = 0, column = 1, pady = 5, padx = 5, sticky="nsew")
     titoloLabel.grid(row = 1, column = 0, pady = 5, padx = 5)
@@ -820,3 +816,48 @@ def loadBookModify(frame):
 
     closeBookButton.grid(row = 0, column = 0, pady = (10, 5), padx = 5, sticky = "nsew")
     modifyBookButton.grid(row = 0, column = 1, pady = (10, 5), padx = 5, sticky = "nsew")
+    
+    
+def loadReviews(frame):
+    treeFrame = Frame(frame)
+    treeFrame.grid(column = 0, row = 1, sticky = "nsew") 
+    
+    selectedBook = str(widgets["books"].item(widgets["books"].selection())["values"][0])
+    
+    averageScoreDatabase = sendMySQL("SELECT AVG(Voto) FROM restituzioni WHERE IDLibro = '" + selectedBook + "';")
+
+    averageScore = Label(
+        frame,
+        text = "Voto medio: " + str(averageScoreDatabase[0][0])
+    )
+    
+    
+    reviewsDatabase = sendMySQL("SELECT Voto, Commento FROM restituzioni WHERE IDLibro = '" + selectedBook + "';")
+
+    columns = ('voto', 'commento')
+
+    reviews = Treeview(
+        treeFrame,
+        columns = columns,
+        show = 'headings'
+    )
+
+    reviews.heading('voto', text="Voto (0 - 5)")
+    reviews.heading('commento', text="Commento")
+
+    if reviewsDatabase != None:
+        for i in range(len(reviewsDatabase)):
+            reviews.insert('', END, values = (
+                reviewsDatabase[i][0],
+                reviewsDatabase[i][1],
+            ))
+
+    reviews.column("voto", width = 20)
+
+    scrollbar = Scrollbar(treeFrame, orient=VERTICAL, command=reviews.yview)
+    reviews.configure(yscroll=scrollbar.set)   
+    
+    averageScore.grid(column = 0, row = 0, pady = 5)
+    
+    reviews.pack(expand = True, fill = "both", side = LEFT)
+    scrollbar.pack(side = LEFT, fill = Y)

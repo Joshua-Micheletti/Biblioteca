@@ -8,6 +8,8 @@ searchWindow = None
 bookWindow = None
 # reviews window
 reviewsWindow = None
+# return window
+returnWindow = None
 
 
 # flag to keep track of the login
@@ -29,7 +31,7 @@ mydb = None
 try:
     # MySQL database connection
     mydb = mysql.connector.connect(
-                host = "192.168.0.105",
+                host = "solidgallium.ddns.net",
                 user = "josh",
                 password = "password",
                 database = "biblioteca"
@@ -61,6 +63,24 @@ def sendMySQL(command):
 
     finally:
         # return the result of the command
+        return(result)
+
+
+def callSQLProcedure(procedure, params):
+    global mydb
+    
+    result = None
+    
+    try:
+        cursor.callproc(procedure, params)
+        print(cursor)
+        result = cursor.stored_results()
+        mydb.commit()
+        
+    except Exception as e:
+        print(e)
+        
+    finally:
         return(result)
 
 
@@ -122,6 +142,20 @@ def closeReviewsWindow():
     global reviewsWindow
     reviewsWindow.destroy()
     reviewsWindow = None
+
+
+def getReturnWindow():
+    global returnWindow
+    return(returnWindow)
+
+def setReturnWindow(newWindow):
+    global returnWindow
+    returnWindow = newWindow
+
+def closeReturnWindow():
+    global returnWindow
+    returnWindow.destroy()
+    returnWindow = None
 
 
 def checkLoggedIn():

@@ -54,9 +54,9 @@ def loadAppFrames():
     #appFNW.rowconfigure(0, weight = 1)
     #appFNW.columnconfigure(0, weight = 1)
 
-    appFDisplayOptions = Frame(getWindow())
-    appFDisplayOptions["relief"] = relief
-    appFDisplayOptions.grid(column = 1, row = 0, sticky = "nsew")
+    appFManageBook = Frame(getWindow())
+    appFManageBook["relief"] = relief
+    appFManageBook.grid(column = 1, row = 0, sticky = "nsew")
 
     appFSearch = Frame(getWindow())
     appFSearch["relief"] = relief
@@ -78,9 +78,9 @@ def loadAppFrames():
     appFLogout["relief"] = relief
     appFLogout.grid(column = 0, row = 2, sticky = "nsew")
 
-    appFSC = Frame(getWindow())
-    appFSC["relief"] = relief
-    appFSC.grid(column = 1, row = 2, sticky = "nsew")
+    appFReview = Frame(getWindow())
+    appFReview["relief"] = relief
+    appFReview.grid(column = 1, row = 2, sticky = "nsew")
 
     appFModifyLibrary = Frame(getWindow())
     appFModifyLibrary["relief"] = relief
@@ -89,13 +89,13 @@ def loadAppFrames():
 
     # load the app frame
     frames["appFUserInfo"] = appFUserInfo
-    frames["appFDisplayOptions"] = appFDisplayOptions
+    frames["appFManageBook"] = appFManageBook
     frames["appFSearch"] = appFSearch
     frames["appFDatabase"] = appFDatabase
     frames["appFCC"] = appFCC
     frames["appFCE"] = appFCE
     frames["appFLogout"] = appFLogout
-    frames["appFSC"] = appFSC
+    frames["appFReview"] = appFReview
     frames["appFModifyLibrary"] = appFModifyLibrary
 
     # return all the frames
@@ -174,3 +174,21 @@ def loadBookFrames(function):
 
     return(frames)
     
+    
+def loadReviewsFrame():
+    frames = dict()
+    
+    getReviewsWindow().rowconfigure(0, weight = 1)
+    getReviewsWindow().columnconfigure(0, weight = 1)
+    
+    reviewsFrame = Frame(getReviewsWindow())
+
+    reviewsFrame.grid(column = 0, row = 0, sticky = "nsew")
+    
+    reviewsFrame.rowconfigure(0, weight = 1)
+    reviewsFrame.rowconfigure(1, weight = 1)
+    reviewsFrame.columnconfigure(0, weight = 1)
+    
+    frames["reviewsFrame"] = reviewsFrame
+    
+    return(frames)

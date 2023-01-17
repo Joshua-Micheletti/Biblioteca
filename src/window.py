@@ -31,12 +31,23 @@ def closeBookWindowManager():
     
     
 def closeReviewsWindowCallback(event):
-    getBookWindow().destroy()
-    setBookWindow(None)
+    getReviewsWindow().destroy()
+    setReviewsWindow(None)
     
 def closeReviewsWindowManager():
-    getBookWindow().destroy()
-    setBookWindow(None)
+    getReviewsWindow().destroy()
+    setReviewsWindow(None)
+    
+    
+def closeReturnWindowCallback(event):
+    getReturnWindow().destroy()
+    setReturnWindow(None)
+    
+def closeReturnWindowManager():
+    getReturnWindow().destroy()
+    setReturnWindow(None)
+
+
 
 
 # function to create windows
@@ -118,10 +129,29 @@ def createReviewsWindow():
     reviewsWindow.resizable(FALSE, FALSE)
     reviewsWindow.minsize(500, 300)
     reviewsWindow.attributes('-alpha', 1)
-    reviewsWindow.bind('<Escape>', closeBookWindowCallback)
-    reviewsWindow.protocol("WM_DELETE_WINDOW", closeBookWindowManager)
+    reviewsWindow.bind('<Escape>', closeReviewsWindowCallback)
+    reviewsWindow.protocol("WM_DELETE_WINDOW", closeReviewsWindowManager)
 
     setReviewsWindow(reviewsWindow)
 
     return(reviewsWindow)
+
+
+
+def createReturnWindow():
+    returnWindow = getReturnWindow()
+
+    returnWindow = Toplevel()
+    returnWindow.geometry("500x300")
+    returnWindow.title("Restituzione")
+    returnWindow.resizable(FALSE, FALSE)
+    returnWindow.minsize(500, 300)
+    returnWindow.attributes('-alpha', 1)
+    returnWindow.bind('<Escape>', closeReturnWindowCallback)
+    returnWindow.protocol("WM_DELETE_WINDOW", closeReturnWindowManager)
+
+    setReturnWindow(returnWindow)
+
+    return(returnWindow)
+
 
