@@ -4,11 +4,9 @@ from globalVars import *
 from style import *
 
 def closeProgramCallback(event):
-    setRunning(False)
     getWindow().destroy()
     
 def closeProgramWindowManager():
-    setRunning(False)
     getWindow().destroy()
     
 

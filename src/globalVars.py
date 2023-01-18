@@ -1,6 +1,9 @@
+# GLOBALVARS module for sharing global variables and objects across all modules
+
+# module for connecting to the MySQL database
 import mysql.connector
 
-# window object
+# main window object
 window = None
 # search window
 searchWindow = None
@@ -13,32 +16,32 @@ returnWindow = None
 
 
 # flag to keep track of the login
-loggedIn = False # MOCK DATA
-# flag to keep track of the program execution
-running = True
+loggedIn = False
 # string for the logged in user
-user = "joshua" # MOCK DATA
+user = ""
 password = ""
+# variable for keeping track of the book owned by the user
+booksOwned = ""
 
-booksOwned = "" # MOCK DATA
-
+# dictionary of StringVar used in the app
 strings = dict()
 
-ints = dict()
-
+# object to store the connection to the database
 mydb = None
 
 try:
     # MySQL database connection
     mydb = mysql.connector.connect(
-                host = "solidgallium.ddns.net",
-                user = "josh",
-                password = "password",
-                database = "biblioteca"
+                host = "solidgallium.ddns.net", # database IP (default port 3306)
+                user = "josh",                  # username
+                password = "password",          # password
+                database = "biblioteca"         # database to use
             )
+    
     # cursor to issue commands to the database
     cursor = mydb.cursor(buffered = True)
-
+    
+# catch any exception in case the database is not reachable
 except Exception as e:
     print(e)
 
@@ -47,6 +50,7 @@ except Exception as e:
 def sendMySQL(command):
     global mydb
 
+    # variable for storing the result of the query
     result = None
 
     try:
@@ -58,6 +62,7 @@ def sendMySQL(command):
         # commit the changes to the database
         mydb.commit()
     
+    # catch any exception
     except Exception as e:
         print(e)
 
@@ -66,78 +71,57 @@ def sendMySQL(command):
         return(result)
 
 
-def callSQLProcedure(procedure, params):
-    global mydb
-    
-    result = None
-    
-    try:
-        cursor.callproc(procedure, params)
-        print(cursor)
-        result = cursor.stored_results()
-        mydb.commit()
-        
-    except Exception as e:
-        print(e)
-        
-    finally:
-        return(result)
-
-
-def closeProgram():
-    global running
-    global window
-
-    running = False
-    window.destroy()
-
 # SETTERS AND GETTERS FOR GLOBAL VARIABLES
+# get main window object
 def getWindow():
     global window
     return(window)
-
+# set main window object
 def setWindow(newWindow):
     global window
     window = newWindow
+# function to close the program
+def closeProgram():
+    global window
+    window.destroy()
 
-
-
+# get search window object
 def getSearchWindow():
     global searchWindow
     return(searchWindow)
-
+# set search window object
 def setSearchWindow(newWindow):
     global searchWindow
     searchWindow = newWindow
-
+# close search window
 def closeSearchWindow():
     global searchWindow
     searchWindow.destroy()
     searchWindow = None
 
-
+# get book window object
 def getBookWindow():
     global bookWindow
     return(bookWindow)
-
+# set book window object
 def setBookWindow(newWindow):
     global bookWindow
     bookWindow = newWindow
-
+# close the book window
 def closeBookWindow():
     global bookWindow
     bookWindow.destroy()
     bookWindow = None
     
-
+# get reviews window object
 def getReviewsWindow():
     global reviewsWindow
     return(reviewsWindow)
-
+# set reviews window object
 def setReviewsWindow(newWindow):
     global reviewsWindow
     reviewsWindow = newWindow
-
+# close the reviews window
 def closeReviewsWindow():
     global reviewsWindow
     reviewsWindow.destroy()
@@ -218,7 +202,3 @@ def getInts():
 def getRunning():
     global running
     return(running)
-
-def setRunning(newRunning):
-    global running
-    running = newRunning

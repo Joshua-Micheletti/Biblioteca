@@ -350,7 +350,6 @@ def clickHandler(*args):
                               "AND Password = '" + hashedPassword + "';")
         
         if not(ownedBook[0][0] is None):
-            print("this turned true")
             messagebox.showerror("Borrow Error",
                                  "You already have a book borrowed")
             return()
@@ -373,11 +372,63 @@ def clickHandler(*args):
         
         setBooksOwned(widgets["books"].item(widgets["books"].selection())["values"][2])
         
-        # widgets["booksLabel"].config(text = widgets["books"].item(widgets["books"].selection())["values"][2])
-        widgets["booksLabel"]["text"] = widgets["books"].item(widgets["books"].selection())["values"][2]
-
-        getWindow().update()
+        getStrings()["booksOwned"].set("Libro: " + widgets["books"].item(widgets["books"].selection())["values"][2])
         
+
+    if args[0] == "return":
+        if getBooksOwned() == "":
+            messagebox.showerror("Errore",
+                                 "Non possiedi nessun libro")
+            return()
+        
+        if getReturnWindow() is None:
+            createReturnWindow()
+            loadWidgets(loadReturnFrame())
+            
+    
+    if args[0] == "closeReturn":
+        closeReturnWindow()
+        
+    
+    if args[0] == "returnButton":
+        hashedPassword = sha256(getPassword().encode('utf-8')).hexdigest()
+        
+        ownedBook = sendMySQL("SELECT IDLibro " +
+                              "FROM utenti " +
+                              "WHERE Nome = '" + getUser() + "' "
+                              "AND Password = '" + hashedPassword + "';")
+        
+        if ownedBook[0][0] is None:
+            messagebox.showerror("Return Error",
+                                 "You don't have any book to return")
+            return()
+        
+        if len(widgets["commentTextBox"].get(1.0, "end-1c")) > 1023:
+            messagebox.showerror("Comment Error",
+                                 "Comment cannot be longer than 1024 characters")
+            return()
+        
+        insertSQL = "INSERT INTO restituzioni(Nome, Password, IDLibro, Voto"
+        valuesSQL = "VALUES ('" + getUser() + "', '" + hashedPassword + "', '" + str(ownedBook[0][0]) + "', '" + getStrings()["scoreDropdown"].get() + "'"
+        
+        if widgets["commentTextBox"].get(1.0, "end-1c") != "":
+            insertSQL += ", Commento) "
+            valuesSQL += ", '" + widgets["commentTextBox"].get(1.0, "end-1c") + "');"
+            
+        else:
+            insertSQL += ") "
+            valuesSQL += ");"
+            
+        sendMySQL(insertSQL + valuesSQL)
+        
+        sendMySQL("UPDATE utenti " +
+                  "SET IDLibro = NULL " +
+                  "WHERE Nome = '" + getUser() + "' " +
+                  "AND Password = '" + hashedPassword + "';")
+        
+        getStrings()["booksOwned"].set("Libro: ")
+        setBooksOwned("")
+            
 
 
 def switchView():
@@ -432,13 +483,7 @@ def loadWidgets(frames):
     
     if "appFDatabase" in frames:
         loadAppDatabase(frames["appFDatabase"])
-    '''
-    if "appFCC" in frames:
-        loadAppCC(frames["appFCC"])
 
-    if "appFCE" in frames:
-        loadAppCE(frames["appFCE"])
-    '''
     if "appFLogout" in frames:
         loadAppLogout(frames["appFLogout"])
 
@@ -465,6 +510,9 @@ def loadWidgets(frames):
         
     if "reviewsFrame" in frames:
         loadReviews(frames["reviewsFrame"])
+        
+    if "returnFrame" in frames:
+        loadReturn(frames["returnFrame"])
 
 # FUNCTION TO LOAD WIDGETS TO FRAMES
 # function to load the login window widgets
@@ -938,3 +986,62 @@ def loadReviews(frame):
     
     reviews.pack(expand = True, fill = "both", side = LEFT)
     scrollbar.pack(side = LEFT, fill = Y)
+    
+
+def loadReturn(frame):
+    getStrings()["scoreDropdown"] = StringVar(name = "scoreDropdown")
+    getStrings()["scoreDropdown"].set("5")
+    
+    returningBookLabel = Label(
+        frame,
+        text = "INSERT BOOK"
+    )
+    
+    scoreLabel = Label(
+        frame,
+        text = "Voto"
+    )
+    
+    options = ["0", "1", "2", "3", "4", "5"]
+    
+    scoreDropdown = OptionMenu(
+        frame,
+        getStrings()["scoreDropdown"],
+        *options
+    )
+    
+    
+    commentLabel = Label(
+        frame,
+        text = "Commento"
+    )
+    
+    commentTextBox = Text(
+        frame,
+        height = 5,
+        width = 20
+    )
+    
+    
+    returnCloseButton = Button(
+        frame,
+        text = "Chiudi",
+        command = lambda: clickHandler("closeReturn")
+    )
+    
+    returnButton = Button(
+        frame,
+        text = "Restituisci",
+        command = lambda: clickHandler("returnButton")
+    )
+    
+    
+    returningBookLabel.grid(column = 0, row = 0, columnspan = 2, padx = 10)
+    scoreLabel.grid(column = 0, row = 1, columnspan = 2, padx = 10, sticky = "s")
+    scoreDropdown.grid(column = 0, row = 2, columnspan = 2, padx = 10)
+    commentLabel.grid(column = 0, row = 3, columnspan = 2, padx = 10, sticky = "s")
+    commentTextBox.grid(column = 0, row = 4, columnspan = 2, padx = 10, sticky = "ew")
+    returnCloseButton.grid(column = 0, row = 5, padx = 10, sticky = "e")
+    returnButton.grid(column = 1, row = 5, columnspan = 2, padx = 10, sticky = "w")
+    
+    widgets["commentTextBox"] = commentTextBox
