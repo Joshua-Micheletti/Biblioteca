@@ -36,7 +36,7 @@ CREATE TABLE restituzioni (
     IDLibro int NOT NULL,
     Voto int,
     Commento varchar(1023),
-    CHECK (Voto >= 0 AND Voto <= 5)
+    CHECK (Voto >= 0 AND Voto <= 5),
     PRIMARY KEY (Nome, Password, IDLibro),
     FOREIGN KEY (Nome, Password) REFERENCES utenti(Nome, Password) ON DELETE CASCADE,
     FOREIGN KEY (IDLibro) REFERENCES libri(ID) ON DELETE CASCADE
@@ -90,15 +90,19 @@ END //
 CREATE PROCEDURE aggiungiLibro(IN inGenere varchar(255), IN inTitolo varchar(255), IN inAutore varchar(255), IN inCasaEditrice varchar(255), IN inAnno int, IN inLuogo varchar(255))
 BEGIN
     INSERT INTO libri(Genere, Titolo, Autore, CasaEditrice, Anno, Luogo)
-    VALUES (inGenere, inTitolo, inAutore, inCasaEditrice, inAnno, inLuogo)
+    VALUES (inGenere, inTitolo, inAutore, inCasaEditrice, inAnno, inLuogo);
 END //
 
 
 CREATE PROCEDURE prendiLibro(IN inID int, IN inNome varchar(255), IN inPassword varchar(255))
 BEGIN
-    UPDATE utenti
-    SET IDLibro = inID
-    WHERE Nome = inNome AND Password = inPassword;
+    IF (SELECT EXISTS( SELECT * FROM utenti WHERE Nome = inNome AND Password = inPassword AND IDLibro IS NULL)) THEN
+        IF (SELECT NOT EXISTS( SELECT * FROM utenti WHERE IDLibro = inID)) THEN
+            UPDATE utenti
+            SET IDLibro = inID
+            WHERE Nome = inNome AND Password = inPassword;
+        END IF;
+    END IF;
 END //
 
 
