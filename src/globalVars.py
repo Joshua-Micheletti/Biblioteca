@@ -35,7 +35,7 @@ try:
                 host = "solidgallium.ddns.net", # database IP (default port 3306)
                 user = "josh",                  # username
                 password = "password",          # password
-                database = "biblioteca"         # database to use
+                database = "Biblioteca"         # database to use
             )
     
     # cursor to issue commands to the database
