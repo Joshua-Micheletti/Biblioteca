@@ -1,4 +1,8 @@
+# LOGIN module for logging in and registering new users
+
+# module for applying a hash function to the password
 from hashlib import sha256
+# module to access global variables and constructs
 from globalVars import *
 
 # LOGIN FUNCTION

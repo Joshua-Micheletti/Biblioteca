@@ -127,78 +127,61 @@ def closeReviewsWindow():
     reviewsWindow.destroy()
     reviewsWindow = None
 
-
+# get return window object
 def getReturnWindow():
     global returnWindow
     return(returnWindow)
-
+# set return window object
 def setReturnWindow(newWindow):
     global returnWindow
     returnWindow = newWindow
-
+# close the return window
 def closeReturnWindow():
     global returnWindow
     returnWindow.destroy()
     returnWindow = None
 
-
-def checkLoggedIn():
-    global loggedIn
-    print(loggedIn)
-
+# set the logged in flag to the argument value
 def setLogin(flag):
     global loggedIn
     loggedIn = flag
-
+# get the logged in flag
 def getLogin():
     global loggedIn
     return(loggedIn)
 
-
-def checkUser():
-    global user
-    print(user)
-
+# set the user variable to the argument value
 def setUser(newUser):
     global user
     user = newUser
-
+# get the user value
 def getUser():
     global user
     return(user)
 
-
+# set the password variable to the argument value
 def setPassword(newPassword):
     global password
     password = newPassword
-    
+# get the password value
 def getPassword():
     global password
     return(password)
 
-
+# set the booksOnwed variable to the argument value
 def setBooksOwned(newBooks):
     global booksOwned
     booksOwned = newBooks
-
+# get the booksOwned value
 def getBooksOwned():
     global booksOwned
     return(booksOwned)
 
-
-def getStrings():
-    global strings
-    return(strings)
-
+# set the strings dictionary
 def setStrings(newStrings):
     global strings
     strings = newStrings
-
-
-def getInts():
-    global ints
-    return(ints)
-
-def getRunning():
-    global running
-    return(running)
+# get the strings dictionary
+def getStrings():
+    global strings
+    return(strings)
