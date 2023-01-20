@@ -573,7 +573,7 @@ def loadLogin(frame):
     # username label
     usernameLabel = Label(
         frame,
-        text = "Username",
+        text = "Nome Utente",
     )
 
     # create a username entry widget
@@ -607,7 +607,7 @@ def loadLogin(frame):
     # create a button to register
     registerButton = Button(
         frame,
-        text = "Register",
+        text = "Registra",
         command = lambda: clickHandler("register")
     )
     registerButton.state(["!disabled"])
