@@ -26,12 +26,14 @@ Il client il cui sorgente è situato in **src** è un programma in Python che au
 
 Se si vuole cambiare il database di riferimento, bisogna modificare i parametri del nuovo database nel file **src/globalVars.py**:
 
->   'mydb = mysql.connector.connect(
->       host = "solidgallium.ddns.net", # database IP (default port 3306)
->       user = "josh",                  # username
->       password = "password",          # password
->       database = "Biblioteca"         # database to use
->   )'
+```sh
+mydb = mysql.connector.connect(
+    host = "solidgallium.ddns.net", # database IP (default port 3306)
+    user = "josh",                  # username
+    password = "password",          # password
+    database = "Biblioteca"         # database to use
+)
+```
 
 
 ### Dipendenze:
