@@ -675,7 +675,7 @@ def loadAppSearch(frame):
     # button to open the search window
     searchButton = Button(
         frame,
-        text = "Search",
+        text = "Cerca",
         command = lambda: clickHandler("search")
     )
 
@@ -737,7 +737,7 @@ def loadAppLogout(frame):
     # button to close the program
     closeButton = Button(
         frame,
-        text = "Close",
+        text = "Chiudi",
         command = lambda: clickHandler("close")
     )
     # button to logout from the current user
@@ -756,7 +756,7 @@ def loadAppReview(frame):
     # button to open the reviews window
     reviewButton = Button(
         frame,
-        text = "See Reviews",
+        text = "Recensioni",
         command = lambda: clickHandler("seeReviews")
     )
     
@@ -767,19 +767,19 @@ def loadAppReview(frame):
 def loadAppModifyLibrary(frame):
     addButton = Button(
         frame,
-        text = "Add Book",
+        text = "Aggiungi Libro",
         command = lambda: clickHandler("addBook")
     )
 
     removeButton = Button(
         frame,
-        text = "Remove Book",
+        text = "Rimuovi Libro",
         command = lambda: clickHandler("removeBook")
     )
 
     modifyButton = Button(
         frame,
-        text = "Modify Book",
+        text = "Modifica Libro",
         command = lambda: clickHandler("modifyBook")
     )
 
@@ -891,19 +891,19 @@ def loadSearchButtons(frame):
     # button for closing the search window
     searchCloseButton = Button(
         frame,
-        text = "Close",
+        text = "Chiudi",
         command = lambda: clickHandler("searchClose")
     )
     # button for clearing the search entries
     searchClearButton = Button(
         frame,
-        text = "Clear",
+        text = "Pulisci",
         command = lambda: clickHandler("searchClear")
     )
     # button for searching according to the user input
     searchQueryButton = Button(
         frame,
-        text = "Search",
+        text = "Cerca",
         command = lambda: clickHandler("searchQuery")
     )
 
@@ -1004,13 +1004,13 @@ def loadBookAdd(frame):
     # button to add a new book
     addBookButton = Button(
         frame,
-        text = "Add",
+        text = "Aggiungi",
         command = lambda: clickHandler("addBookSQL")
     )
     # button to close the book window
     closeBookButton = Button(
         frame,
-        text = "Close",
+        text = "Chiudi",
         command = lambda: clickHandler("closeBook")
     )
 
@@ -1023,13 +1023,13 @@ def loadBookModify(frame):
     # button to modify the selected book with the entries provided by the user
     modifyBookButton = Button(
         frame,
-        text = "Modify",
+        text = "Modifica",
         command = lambda: clickHandler("modifyBookSQL")
     )
     # button to close the book window
     closeBookButton = Button(
         frame,
-        text = "Close",
+        text = "Chiudi",
         command = lambda: clickHandler("closeBook")
     )
 
