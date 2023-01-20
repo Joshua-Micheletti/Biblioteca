@@ -478,7 +478,7 @@ def clickHandler(*args):
             if widgets["commentTextBox"].get(1.0, "end-1c") != "":
                 updateSQL += ", Commento = '" + widgets["commentTextBox"].get(1.0, "end-1c") + "' "
             else:
-                updateSQL += " "
+                updateSQL += ", Commento = NULL "
             
             # send the query
             sendMySQL(updateSQL + whereSQL)
@@ -492,29 +492,6 @@ def clickHandler(*args):
         # update the UI to show the owned book
         getStrings()["booksOwned"].set("Libro: ")
         setBooksOwned("")
-            
-
-def selectedBook(event):
-    selectedBooks = []
-
-    for selected_item in widgets["books"].selection():
-        item = widgets["books"].item(selected_item)
-
-        selectedBooks.append(item['values'])
-
-    print(selectedBooks)
-
-    item = widgets["books"].item(widgets["books"].selection()[0])
-    values = item['values']
-
-    '''
-    getStrings()["newGenereEntry"].set(values[0])
-    getStrings()["newTitoloEntry"].set(values[1])
-    getStrings()["newAutoreEntry"].set(values[2])
-    getStrings()["newCasaeditriceEntry"].set(values[3])
-    getStrings()["newAnnoEntry"].set(values[4])
-    getStrings()["newLuogoEntry"].set(values[5])
-    '''
 
 
 # function to load widgets into the respective frames
@@ -564,6 +541,7 @@ def loadWidgets(frames):
     # return frame
     if "returnFrame" in frames:
         loadReturn(frames["returnFrame"])
+
 
 
 # FUNCTIONS TO LOAD WIDGETS TO FRAMES
@@ -731,8 +709,6 @@ def loadAppDatabase(frame):
     
     # make the ID column invisible to the user
     books["displaycolumns"] = ('genere', 'titolo', 'autore', 'casaeditrice', 'anno', 'luogo')
-
-    #books.bind('<<TreeviewSelect>>', selectedBook)
     
     # pack the treeview and scrollbar widgets to the frame
     books.pack(expand = True, fill = "both", side = LEFT)
