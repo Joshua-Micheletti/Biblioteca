@@ -21,6 +21,8 @@ def login(username, password):
                                  "FROM libri " +
                                  "WHERE ID = " + str(result[0][2]))
             setBooksOwned(bookName[0][0])
+        else:
+            setBooksOwned("")
         
         return(True)
     

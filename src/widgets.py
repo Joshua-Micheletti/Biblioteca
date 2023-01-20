@@ -46,6 +46,21 @@ def clickHandler(*args):
     
     # register behaviour
     if args[0] == "register":
+        # if the user doesn't provide a username
+        if len(getStrings()["usernameEntry"].get()) == 0:
+            # notify the user
+            messagebox.showerror("Errore input",
+                                 "Nome utente non presente")
+            return()
+        
+        # if the user doesn't provide a password
+        if len(getStrings()["passwordEntry"].get()) == 0:
+            # notify the user
+            messagebox.showerror("Errore input",
+                                 "Password non presente")
+            return()
+        
+        
         if register(getStrings()["usernameEntry"].get(), getStrings()["passwordEntry"].get()):
             # let the user know of the registration
             messagebox.showinfo("Registrazione con successo",
