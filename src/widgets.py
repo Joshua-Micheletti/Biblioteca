@@ -208,8 +208,8 @@ def clickHandler(*args):
         # if no book is selected
         if len(widgets["books"].selection()) == 0:
             # notify the error to the user
-            messagebox.showerror("Selection Error",
-                                 "No book selected")
+            messagebox.showerror("Errore selezione",
+                                 "Nessun libro selezionato")
             return()
 
         # if the book window isn't already opened
@@ -236,8 +236,8 @@ def clickHandler(*args):
         # if no book is selected
         if len(widgets["books"].selection()) == 0:
             # notify the user of the error
-            messagebox.showerror("Selection Error",
-                                 "No book selected")
+            messagebox.showerror("Errore di selezione",
+                                 "Nessun libro selezionato")
             return()
 
         # for each book selected
@@ -354,8 +354,8 @@ def clickHandler(*args):
         # if no book is selected
         if len(widgets["books"].selection()) == 0:
             # notify the user
-            messagebox.showerror("Selection Error",
-                                 "No book selected")
+            messagebox.showerror("Errore di selezione",
+                                 "Nessun libro selezionato")
             return()
         
         # if the reviews window isn't already opened
